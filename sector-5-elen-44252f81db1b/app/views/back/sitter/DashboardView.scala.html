@@ -1,0 +1,11 @@
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.sitter.common.BaseView(title = "Blank Page", nav = Array(
+    (controllers.sitter.routes.SitterController.GET_SitterDashboard(), "views.back.parent.common.sideBar.dashboard")
+)) {
+    <div class="row">
+        <div class="col-sm-12">
+            Contents here
+        </div>
+    </div>
+}

@@ -1,0 +1,19 @@
+@import play.data.Form
+@import play.api.mvc.Call
+@import form.profile.ProfileForm
+@import form.profile.ChangePasswordForm
+@(
+        profileForm: Form[ProfileForm],
+        passwordForm: Form[ChangePasswordForm],
+        profileCall: Call,
+        passwordCall: Call
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@render(pageStyle: Html, pageScript: Html)(content: Html) = @{
+    back.sitter.common.BaseView(pageStyle, pageScript, "views.back.userProfile.userProfile.title", Array(
+        (controllers.sitter.routes.SitterController.GET_SitterDashboard(), "views.back.admin.common.sideBar.dashboard"),
+        (null, "views.back.admin.common.sideBar.myProfile")
+    ))(content)
+}
+
+@back.userprofile.UserProfileView(profileForm, passwordForm, profileCall, passwordCall)(render)

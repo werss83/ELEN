@@ -1,0 +1,165 @@
+@import form.parent.BookedCareForm
+@import views.html.back.component.SimpleInput
+@import play.data.Form
+@import views.html.helper.CSRF
+
+@(form: Form[BookedCareForm])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.parent.common.BaseView(
+    pageStyle = css,
+    pageScript = js,
+    title = "views.back.parent.scheduleNewCare.title",
+    nav = Array(
+        (controllers.parent.routes.ParentController.GET_ParentDashboard(), "views.back.parent.common.sideBar.dashboard"),
+        (null, "views.back.parent.common.sideBar.newCare")
+)) {
+    <form id="schedule-new-care-form" method="post" action="@controllers.parent.routes.CareController.POST_ScheduleNewCare()">
+        @CSRF.formField
+        <section id="step-care-type" class="section step active" data-step="1" data-next-step="#">
+            <div class="banner-wrapper">
+                <div id="care-type-wrapper">
+                    <div class="radio-input-wrapper">
+                        <input required type="radio" id="choose-one-time-care" name="careType" value="ONE_TIME"/>
+                        <label for="choose-one-time-care">
+                            <span class="blue"><b>@messages("views.front.parentOnboarding.oneTimeCare.choice")</b></span>
+                            <span>@messages("views.front.parentOnboarding.oneTimeCare.description")</span>
+                            <span class="care-icon">🕔</span>
+                        </label>
+                    </div>
+                    <div class="radio-input-wrapper">
+                        <input required type="radio" id="choose-recurrent-care" name="careType" value="RECURRENT"/>
+                        <label for="choose-recurrent-care">
+                            <span class="blue"><b>@messages("views.front.parentOnboarding.recurrentCare.choice")</b></span>
+                            <span>@messages("views.front.parentOnboarding.recurrentCare.description")</span>
+                            <span class="care-icon">📆</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="step-one-time-care" class="section step" data-step="2" data-previous-step="#step-care-type">
+            <div class="banner-wrapper">
+                <div class="row">
+                    <div class="col-6">
+                        @SimpleInput(form, form.field("oneTimeCare.date"), label = "views.front.parentOnboarding.form.oneTimeCare.date", inputId = "one-time-care-date", extraAttrs = Seq(("autocomplete", "off")))
+                    </div>
+                    <div class="col-6">
+                        @SimpleInput(form, form.field("oneTimeCare.startHour"), label = "views.front.parentOnboarding.form.oneTimeCare.startHour", inputId = "one-time-care-start-hour")
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        @SimpleInput(form, form.field("oneTimeCare.duration"), label = "views.front.parentOnboarding.form.oneTimeCare.duration", inputId = "one-time-care-duration")
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="step-recurrent-care" class="section step" data-step="3" data-previous-step="#step-care-type">
+            <div class="banner-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="calendar" data-title="@messages("views.front.parentOnboarding.recurrentCare.title")" data-button-add="@messages("common.add")">
+                            <input id="calendar-validity" type="text" data-validity="@messages("views.front.parentOnboarding.recurrentCare.validity")">
+                        </div>
+                        <div id="events"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+    <div id="stepper-nav">
+        <div class="banner-wrapper">
+            <div id="nav-location">
+                <div id="previous-step-button-wrapper">
+                    <button id="previous-button" class="btn btn-light btn-lg login-btn">@messages("common.previousStep")</button>
+                </div>
+                <div id="schedule-button-wrapper">
+                    <button id="schedule-button" class="btn btn-primary btn-lg login-btn" type="submit" form="schedule-new-care-form">@messages("views.nack.parent.scheduleNewCare.getQuotation")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="add-event-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@messages("views.front.parentOnboarding.recurrentCare.add.modal.header")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span>
+                        <label for="event-day" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.day")</label>
+                        <select id="event-day" name="eventDay" class="form-control pr-2">
+                            <option value="1">@messages("common.monday")</option>
+                            <option value="2">@messages("common.tuesday")</option>
+                            <option value="3">@messages("common.wednesday")</option>
+                            <option value="4">@messages("common.thursday")</option>
+                            <option value="5">@messages("common.friday")</option>
+                            <option value="6">@messages("common.saturday")</option>
+                            <option value="7">@messages("common.sunday")</option>
+                        </select>
+                    </span>
+                    <span class="pt-2">
+                        <label for="event-start-hour" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.hour.from")</label>
+                        <input id="event-start-hour" name="event-start-hour" class="form-control" type="text">
+                        <label for="event-end-hour" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.hour.to")</label>
+                        <input id="event-end-hour" name="event-end-hour" class="form-control" type="text">
+                        <div id="error-information" class="text-danger pt-3">@messages("views.front.parentOnboarding.recurrentCare.add.modal.unavailable")</div>
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-event-button" type="button" data-dismiss="modal" class="btn btn-cyan">@messages("common.add")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+    <!-- JQuery UI -->
+    <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.css")">
+
+    <!-- Jquery.Timepicker -->
+    <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery.timepicker/jquery.timepicker.min.css")">
+
+    <!-- Fullcalendar -->
+    <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fullcalendar/fullcalendar.min.css")">
+
+    <!-- Powerange -->
+    <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/powerange/powerange.min.css")">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/custom-general.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/custom-select2.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/custom-calendar.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/new-care.css")">
+}
+
+@js = {
+    <!-- jQuery -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/i18n/fr.js")"></script>
+
+    <!-- Jquery.Timepicker -->
+    <script type="text/javascript"src="@routes.Assets.at("assets/plugins/jquery.timepicker/jquery.timepicker.min.js")"></script>
+
+    <!-- Moment -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/moment/moment.min.js")"></script>
+
+    <!-- Powerange -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/powerange/powerange.min.js")"></script>
+
+    <!-- Fullcalendar -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/fullcalendar/fullcalendar.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/fullcalendar/locale-fr.js")"></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/script.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("admin/assets/js/new-care.js")"></script>
+}

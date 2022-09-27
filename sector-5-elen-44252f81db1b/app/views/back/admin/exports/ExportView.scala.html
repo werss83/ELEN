@@ -1,0 +1,44 @@
+@import play.data.Form
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import form.admin.ExportForm
+@(form: Form[ExportForm])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.admin.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.admin.export.title", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard"),
+    (controllers.admin.routes.UserManageController.GET_Users(), "views.back.admin.common.sideBar.exports")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>@messages("views.back.admin.export.billing")</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="@controllers.admin.routes.ExportController.POST_Export()">
+                        @CSRF.formField
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-6">
+                                @SimpleInput(form, form.field("startDate"), label = "views.back.admin.export.form.startDate", inputExtraClass = "date-input", placeholder = "__/__/____")
+                            </div>
+                            <div class="col-sm-12 col-lg-6">
+                                @SimpleInput(form, form.field("endDate"), label = "views.back.admin.export.form.endDate", inputExtraClass = "date-input", placeholder = "__/__/____")
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <button name="flavor" value="sitter" type="submit" class="btn btn-primary">@messages("views.back.admin.export.form.sitter.submit")</button>
+                            <button name="flavor" value="parent" type="submit" class="btn btn-primary">@messages("views.back.admin.export.form.parent.submit")</button>
+                            <button name="flavor" value="billing" type="submit" class="btn btn-primary">@messages("views.back.admin.export.form.billing.submit")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+}
+
+@js = {
+}

@@ -1,0 +1,4 @@
+@import play.api.mvc.Call
+@(pageStyle: Html = null, pageScript: Html = null, title: String = null, nav: Array[scala.Tuple2[Call, String]] = null)(content: Html)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.common.BaseView(pageStyle, pageScript, title, nav)(routes.ProfileController.GET_ParentProfile(), back.parent.common.SideBarContent())(content)

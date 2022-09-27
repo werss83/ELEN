@@ -1,0 +1,147 @@
+@import security.Role
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.admin.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.admin.users.userList.title", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard"),
+    (null, "views.back.admin.common.sideBar.users")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-right">
+                                <a href="@controllers.admin.routes.UserManageController.GET_NewUser()" class="btn btn-success">
+                                    @messages("views.back.admin.users.userList.createUser")
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label>@messages("views.back.admin.users.userList.search.nameOrEmail")</label>
+                                <input id="name-email-search" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label>@messages("views.back.admin.users.userList.search.phone")</label>
+                                <input id="phone-search" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label>@messages("views.back.admin.users.userList.search.address")</label>
+                                <input id="address-search" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select class="select" id="role-search">
+                                    <option>@messages("views.back.admin.users.userList.roles.all")</option>
+                                    <option value="@Role.ROLE_PARENT.name()">@messages(Role.ROLE_PARENT.getTranslationKey)</option>
+                                    <option value="@Role.ROLE_SITTER.name()">@messages(Role.ROLE_SITTER.getTranslationKey)</option>
+                                    <option value="@Role.ROLE_ADMIN.name()">@messages(Role.ROLE_ADMIN.getTranslationKey)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table id="account-list" class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>@messages("views.back.admin.users.userList.column.id")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.name")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.email")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.phone")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.address")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.hours")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.problems")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.role")</th>
+                                        <th>@messages("views.back.admin.users.userList.column.actions")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.css")">
+}
+
+@js = {
+        <!-- Datatables JS -->
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/js/datatables-custom.js")"></script>
+    <script type="application/javascript">
+            $(document).ready(function () {
+                table = $('#account-list').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@controllers.admin.routes.UserManageController.POST_UserAjaxList()",
+                        data: function (d) {
+                            return JSON.stringify({parameters: d});
+                        }
+                    },
+                    searching: true,
+                    dom: "ltipr",
+                    columns: [{
+                        name: "id",
+                        orderable: true,
+                        searchable: false
+                    }, {
+                        name: "name",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "email",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "phoneNumber",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "address",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "hours",
+                        orderable: false,
+                        searchable: false
+                    }, {
+                        name: "problems",
+                        orderable: false,
+                        searchable: false
+                    }, {
+                        name: "roles",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "actions",
+                        orderable: false,
+                        searchable: false
+                    }],
+                    order: [[0, "desc"]],
+                    columnDefs: []
+                });
+                $("#name-email-search").DataTablesSearch(table, "name:name")
+                $("#phone-search").DataTablesSearch(table, "phoneNumber:name")
+                $("#address-search").DataTablesSearch(table, "address:name")
+                $("#role-search").DataTablesSearch(table, "roles:name")
+            });
+    </script>
+}

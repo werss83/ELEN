@@ -1,0 +1,91 @@
+@import play.mvc.Call
+
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@underlying(call: Call, condition: (String, String) => Boolean)(content: Html) = {
+    <li class="@if(condition.apply(request.path, call.url)) { active }">
+        <a href="@call"  class="cyan-item">
+        @content
+        </a>
+    </li>
+}
+
+@condEquals(s1: String, s2: String) = @{ s1.equals(s2) }
+@condStartsWith(s1: String, s2: String) = @{ s1.startsWith(s2) }
+@entryEq(call: Call)(content: Html) = { @underlying(call, condEquals)(content) }
+@entryStartsWith(call: Call)(content: Html) = { @underlying(call, condStartsWith)(content) }
+
+<ul>
+    @entryEq(controllers.sitter.routes.SitterController.GET_SitterDashboard()) {
+        <i class="fe fe-home"></i>
+        <span class="sidebar-link">@messages("views.back.sitter.common.sideBar.dashboard")</span>
+    }
+    @entryStartsWith(controllers.routes.ProfileController.GET_SitterProfile()) {
+        <i class="fe fe-user"></i>
+        <span class="sidebar-link">@messages("views.back.sitter.common.sideBar.myProfile")</span>
+    }
+
+    <hr style="border-color: #f1f1f1;">
+
+    <li>
+        <a href="@org.pac4j.play.routes.LogoutController.logout" class="cyan-item">
+            <i class="fe fe-logout"></i>
+            <span>@messages("common.logout")</span>
+        </a>
+    </li>
+
+    <hr style="border-color: #f1f1f1;">
+
+    <li class="menu-title" style="margin-bottom: -8px;">
+        <i class="fe fe-headphone" style="font-size: 24px;"></i>
+        <span class="sidebar-link" style="padding: 8px 15px; font-size: 16px;">@messages("views.back.home.contact.title")
+            <br/>
+            <span style="font-size: 13px; margin-left: -30px;">@messages("views.back.home.contact.text")</span>
+        </span>
+    </li>
+    <li>
+        <a href="tel:@messages("views.back.home.contactPhone.button").replace(" ", "")" class="cyan-item"><i class="fe fe-phone"></i> <span class="sidebar-link">@messages("views.back.home.contactPhone.button")</span></a>
+    </li>
+    <li>
+        <a href="mailto:@messages("views.back.home.contactEmail.button")" class="cyan-item"><i class="fe fe-mail"></i> <span class="sidebar-link">@messages("views.back.home.contactEmail.button")</span></a>
+    </li>
+
+    @*
+    <li>
+        <a href="#"><i class="fe fe-home"></i> <span class="sidebar-link">@messages("views.back.home.home.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-clock"></i> <span class="sidebar-link">@messages("views.back.home.currentCare.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-plus"></i> <span class="sidebar-link">@messages("views.back.home.bookACare.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-calendar"></i> <span class="sidebar-link">@messages("views.back.home.planning.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-list-bullet"></i> <span class="sidebar-link">@messages("views.back.home.sitterDirectory.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-user"></i> <span class="sidebar-link">@messages("views.back.home.profile.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-users"></i> <span class="sidebar-link">@messages("views.back.home.children.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-feather"></i> <span class="sidebar-link">@messages("views.back.home.sponsorship.button")</span></a>
+    </li>
+    <li>
+        <a href="#"><i class="fe fe-file"></i> <span class="sidebar-link">@messages("views.back.home.files.button")</span></a>
+    </li>
+    <li class="menu-title">
+        <span>@messages("views.back.home.contact.title")</span>
+    </li>
+    <li>
+        <a href="tel:@messages("views.back.home.contactPhone.button").replace(" ", "")"><i class="fe fe-phone"></i> <span class="sidebar-link">@messages("views.back.home.contactPhone.button")</span></a>
+    </li>
+    <li>
+        <a href="mailto:@messages("views.back.home.contactEmail.button")"><i class="fe fe-mail"></i> <span class="sidebar-link">@messages("views.back.home.contactEmail.button")</span></a>
+    </li>
+    *@
+</ul>

@@ -1,0 +1,18 @@
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div class="login-or">
+    <span class="or-line"></span>
+    <span class="span-or">@messages("views.front.login.alternative")</span>
+</div>
+<div class="row form-row social-login">
+    <div class="col-6">
+        <a href="@controllers.routes.StandardLoginController.GET_LoginFacebook()" class="btn btn-facebook btn-block btn-rounded">
+            <i class="fab fa-facebook-f mr-1"></i> @messages("views.front.login.withFacebook")
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="@controllers.routes.StandardLoginController.GET_LoginGoogle()" class="btn btn-google btn-block btn-rounded">
+            <i class="fab fa-google mr-1"></i> @messages("views.front.login.withGoogle")
+        </a>
+    </div>
+</div>

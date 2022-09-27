@@ -1,0 +1,360 @@
+@import entities.dto.quotation.QuotationDTO
+@import views.html.helper.CSRF
+@import play.api.mvc.Call
+@import org.joda.time.DateTime
+
+@(quotation: QuotationDTO, action: Call)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@header = {
+    <dis class="inner-page-header pl-3">
+        @messages("company.project.name")
+    </dis>
+}
+
+@footer = {
+    <div class="inner-page-footer">
+        <div class="inner-page-footer-company blue">@messages("company.project.name")</div>
+        <div class="inner-page-footer-legal blue">
+            <div>@messages("views.front.parentOnboarding.footer.legal.line1")</div>
+            <div>@messages("views.front.parentOnboarding.footer.legal.line2")</div>
+            <div>@messages("views.front.parentOnboarding.footer.legal.line3")</div>
+            <div>@messages("views.front.parentOnboarding.footer.legal.line4")</div>
+        </div>
+        <div class="inner-page-footer-sap">
+            <img id="sap" alt="Services à la personne" src="@routes.Assets.at("img/sap.png")">
+        </div>
+    </div>
+}
+
+@quotationDetail = {
+    <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.subsidizeQuotation.quotationDetails")</h4>
+    @if(quotation.isLessThanMinimumHour) {
+        <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.subsidizeQuotation.detail", quotation.getMinimumHourCostIncludingTaxesBeforeCmgAndCreditDiscount, String.valueOf(quotation.getMinimumHour))</div>
+    } else {
+        @if(quotation.isRecurrentCare) {
+            <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.subsidizeQuotation.detail", quotation.getCostIncludingTaxes, String.valueOf(quotation.getTotalHour * 4))</div>
+        } else {
+            <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.subsidizeQuotation.detail", quotation.getCostIncludingTaxes, String.valueOf(quotation.getTotalHour))</div>
+        }
+    }
+    <div id="quotation-details" class="mb-2">
+        <div id="quotation-progress">
+            <div class="progress progress-lg">
+                <div class="progress-bar w-60 blue-h" role="progressbar"></div>
+                <div class="progress-bar w-20 pink-h" role="progressbar"></div>
+                <div class="progress-bar w-20 yellow-h" role="progressbar"></div>
+            </div>
+        </div>
+        <div id="quotation-progress-details">
+            <div id="customer-share-value" class="h-25">
+                <div>
+                    @if(quotation.isLessThanMinimumHour) {
+                        <span class="value font-weight-bold yellow-h white-wrap">@Html(messages("views.front.parentOnboarding.subsidizeQuotation.customerShare.cost", quotation.getCustomerShare, quotation.getMinimumHourCostPerHourIncludingTaxesAfterCmgAndCreditDiscount))</span>
+                    } else {
+                        <span class="value font-weight-bold yellow-h white-wrap">@Html(messages("views.front.parentOnboarding.subsidizeQuotation.customerShare.cost", quotation.getCustomerShare, quotation.getCostPerHourIncludingTaxesAfterCmgAndCreditDiscount))</span>
+                    }
+                </div>
+                <div>👨‍👩‍👦</div>
+            </div>
+            <div id="tax-share-value" class="h-10">
+                <div>
+                    <span class="value euro font-weight-bold pr-2 pink">@quotation.getTaxShare</span>
+                    <span class="value-title">@messages("views.front.parentOnboarding.subsidizeQuotation.taxShare")</span>
+                </div>
+                <div>🇫🇷</div>
+            </div>
+            <div id="caf-share-value" class="h-60">
+                <div>
+                    <span class="value euro font-weight-bold pr-2 blue">@quotation.getCafShare</span>
+                    <span class="value-title">@messages("views.front.parentOnboarding.subsidizeQuotation.cafShare")</span>
+                </div>
+                <div><img id="caf" class="caf-logo" alt="" src="@routes.Assets.at("img/logo_caf.png").url"></div>
+            </div>
+        </div>
+    </div>
+    <div class="asterisk">@messages("views.front.parentOnboarding.subsidizeQuotation.taxCreditAsterisk.details")</div>
+    <div class="asterisk">@messages("views.front.parentOnboarding.subsidizeQuotation.cmg.details") <a class="text-info" href="http://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/petite-enfance/le-complement-de-libre-choix-du-mode-de-garde">http://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/petite-enfance/le-complement-de-libre-choix-du-mode-de-garde</a></div>
+}
+
+@transparency = {
+    <div id="transparency" class="pb-4">
+        <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.transparencyPayment")</h4>
+        <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.transparencyPayment.forHourCost", quotation.getFullHourCost)</div>
+        <div id="price-details" class="mb-2">
+            <div id="price-progress">
+                <div class="progress progress-lg">
+                    <div class="progress-bar w-20 blue-h" role="progressbar"></div>
+                    <div class="progress-bar w-15 pink-h" role="progressbar"></div>
+                    <div class="progress-bar w-25 cyan-h" role="progressbar"></div>
+                    <div class="progress-bar w-40 yellow-h" role="progressbar"></div>
+                </div>
+            </div>
+            <div id="price-progress-details">
+                <div id="salary-share-value" class="h-40">
+                    <div class="value font-weight-bold pr-2"><span class="yellow-h">@quotation.getSalaryHourCost €</span></div>
+                    <div class="value-title">@messages("views.front.parentOnboarding.transparencyPayment.salaryCost")</div>
+                </div>
+                <div id="fee-share-value" class="h-25">
+                    <div class="value euro font-weight-bold pr-2 cyan">@quotation.getPayrollHourCost</div>
+                    <div class="value-title white-wrap">@messages("views.front.parentOnboarding.transparencyPayment.payrollCost")</div>
+                </div>
+                <div id="tax-share-value" class="h-15">
+                    <div class="value euro font-weight-bold pr-2 pink">@quotation.getDutyHourCost</div>
+                    <div class="value-title">@messages("views.front.parentOnboarding.transparencyPayment.dutyCost")</div>
+                </div>
+                <div id="elen-share-value" class="h-20">
+                    <div class="value font-weight-bold pr-2 blue white-wrap">@Html(messages("views.front.parentOnboarding.transparencyPayment.elenCost", String.valueOf(quotation.getElenFullHourCost), String.valueOf(quotation.getElenReduceHourCost), String.valueOf(quotation.getFullHourLimit)))</div>
+                    <div class="value-title">@messages("views.front.parentOnboarding.transparencyPayment.elen")</div>
+                </div>
+            </div>
+        </div>
+        <div class="pt-2">@Html(messages("views.front.parentOnboarding.transparencyPayment.annexCost", quotation.getKilometerChargeCost))</div>
+    </div>
+}
+
+@regards = {
+    <div id="regards">
+        <div class="font-weight-bold">@Html(messages("views.front.parentOnboarding.paymentRefund.regards.elen"))</div>
+    </div>
+}
+
+<div class="content container-fluid">
+    <div class="content">
+        <form method="POST" id="onboarding-form" action="@action">
+            @CSRF.formField
+            <section id="step-quotation" class="pb-5">
+                <div class="banner-wrapper">
+                    <div id="page-1" class="page">
+                        @header
+                        <div class="inner-page">
+                            <div>
+                                <div id="header" class="pb-5">
+                                    <div id="title">
+                                        <div class="blue">@messages("views.front.parentOnboarding.quotation.title", quotation.getQuotationNumber)</div>
+                                        <img id="sap" alt="Services à la personne" src="@routes.Assets.at("img/sap.png")">
+                                    </div>
+                                    <div id="customer">
+                                        <div class="font-weight-bold">@quotation.getCustomerFullName</div>
+                                        <div>@quotation.getCustomerAddress</div>
+                                        <div class="pb-2">@quotation.getCustomerLocation</div>
+                                        <div>@messages("views.front.parentOnboarding.quotation.city", quotation.getCapitalName, DateTime.now.toString("dd.MM.YYYY"))</div>
+                                    </div>
+                                </div>
+
+                                <div id="base-quotation" class="pb-4">
+                                    <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.baseQuotation.planning.title")</h4>
+                                    <div>@messages("views.front.parentOnboarding.baseQuotation.planning")</div>
+                                    @if(quotation.isOneTimeCare) {
+                                        <div id="base-quotation-one-time-care">
+                                            @Html(messages(
+                                                "views.front.parentOnboarding.baseQuotation.planning.oneTimeCare",
+                                                quotation.getOneTimeCare.getDate.toString("dd/MM/YYYY"),
+                                                String.valueOf(quotation.getOneTimeCare.getStartDate.toString("HH'h'mm")),
+                                                String.valueOf(quotation.getOneTimeCare.getEndDate.toString("HH'h'mm")),
+                                                String.valueOf(quotation.getTotalHour))
+                                            )
+                                        </div>
+                                    }
+                                    @if(quotation.isRecurrentCare) {
+                                        <div id="base-quotation-recurrent-care">
+                                            <div>@Html(messages("views.front.parentOnboarding.baseQuotation.planning.recurrentCare", String.valueOf(quotation.getTotalHour)))</div>
+                                            <ul>
+                                            @for(care <- quotation.getRecurrentCare) {
+                                                <li>@messages("views.front.parentOnboarding.baseQuotation.planning.recurrentCare.listItem", (care.getDate.toString("EEEE", messages.lang.toLocale)), String.valueOf(care.getStartDate.toString("HH'h'mm")), String.valueOf(care.getEndDate.toString("HH'h'mm")))</li>
+                                            }
+                                            </ul>
+                                            <div>@Html(messages("views.front.parentOnboarding.baseQuotation.planning.recurrentCare.total", String.valueOf(quotation.getRecurrentWeeklyHour * 4)))</div>
+                                        </div>
+                                    }
+                                    <div id="price" class="mt-3 mb-3 pt-2 pb-2">
+                                        <div class="blue">@Html(messages("views.front.parentOnboarding.baseQuotation.priceExplanation", quotation.getFullHourCost, String.valueOf(quotation.getFullHourLimit), String.valueOf(quotation.getReduceHourCost)))</div>
+                                        <div class="asterisk">@messages("views.front.parentOnboarding.baseQuotation.priceExplanation.nightAndBankHoliday")</div>
+                                    </div>
+                                    @if(quotation.isRecurrentCare) {
+                                        <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.baseQuotation.recurrentPrice", String.valueOf(quotation.getRecurrentWeeklyHour * 4))</h4>
+                                    } else {
+                                        <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.baseQuotation.basePrice", String.valueOf(quotation.getTotalHour))</h4>
+                                    }
+                                    <div id="base-quotation-price" class="quotation-price">
+                                        <div id="base-quotation-price-duty-free">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.withoutTaxes")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getCostDutyFree</div>
+                                        </div>
+                                        <div id="base-quotation-duty">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.duty")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getDutyCost</div>
+                                        </div>
+                                        @if(quotation.isSubsidize && !quotation.isLessThanMinimumHour) {
+                                            <div id="base-quotation-price-including-taxes-before-cmg-and-credit-discount">
+                                                <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesBeforeCmgAndCreditReduction")</div>
+                                                <div class="value euro pb-2 font-weight-bold">@quotation.getCostIncludingTaxes</div>
+                                            </div>
+                                            <div id="base-quotation-price-including-taxes-after-cmg-discount">
+                                                <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgDiscount")</div>
+                                                <div class="value euro pb-2 font-weight-bold">@quotation.getCostIncludingTaxesAfterCmgDiscount</div>
+                                            </div>
+                                            <div id="base-quotation-price-including-taxes-after-cmg-and-credit-discount">
+                                                <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgAndCreditDiscount")</div>
+                                                <div class="value pink pb-2 font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgAndCreditDiscount.cost", quotation.getCostIncludingTaxesAfterCmgAndCreditDiscount, quotation.getCostPerHourIncludingTaxesAfterCmgAndCreditDiscount)</div>
+                                            </div>
+                                            <div class="asterisk pt-2"><span>@Html(messages("views.front.parentOnboarding.subsidizeQuotation.cmgDiscount.details"))</span></div>
+                                            <div class="asterisk"><span>@messages("views.front.parentOnboarding.subsidizeQuotation.taxCreditDoubleAsterisk.details")</span></div>
+                                        } else {
+                                            <div id="base-quotation-price-including-taxes-before-credit-discount">
+                                                <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesBeforeCreditReduction")</div>
+                                                <div class="value euro pb-2 font-weight-bold">@quotation.getCostIncludingTaxes</div>
+                                            </div>
+                                            <div id="base-quotation-price-including-taxes-after-credit-discount">
+                                                <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCreditDiscount")</div>
+                                                <div class="value pink pb-2 font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCreditDiscount.cost", quotation.getCostIncludingTaxesAfterCreditDiscount, quotation.getCostPerHourIncludingTaxesAfterCreditDiscount)</div>
+                                            </div>
+                                            <div class="asterisk pt-2"><span>@messages("views.front.parentOnboarding.subsidizeQuotation.taxCreditAsterisk.details")</span></div>
+                                        }
+                                    </div>
+                                    @if(quotation.isSubsidize && quotation.isLessThanMinimumHour) {
+                                        <div id="first-eligibility" class="pink-h mt-2">
+                                            <span>@messages("views.front.parentOnboarding.quotation.firstEligibility")</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Page 1 -->
+                    <div id="page-2" class="page">
+                        @header
+                        <div class="inner-page">
+                            <div>
+                                <div id="recap">
+                                    <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.subsidizeQuotation.statement")</h4>
+                                    <ul class="pl-1">
+                                        @if(quotation.getChildrenLessThanThree > 0) {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.dependentChildrenLessThanThree", String.valueOf(quotation.getChildrenLessThanThree))</li>
+                                        }
+                                        @if(quotation.getChildrenLessThanSix > 0) {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.dependentChildrenLessThanSix", String.valueOf(quotation.getChildrenLessThanSix))</li>
+                                        }
+                                        @if(quotation.getChildrenMoreThanSix > 0) {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.dependentChildrenMoreThanSix", String.valueOf(quotation.getChildrenMoreThanSix))</li>
+                                        }
+
+                                        <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.lastYearIncome", DateTime.now.minusYears(1).toString("YYYY"), quotation.getIncomeStatement)</li>
+
+                                        @if(quotation.isSingleParent) {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.isSingleParent")</li>
+                                        } else {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.isNotSingleParent")</li>
+                                        }
+
+                                        @if(quotation.isHandicapBenefit) {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.isHandicapBenefit")</li>
+                                        } else {
+                                            <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.statement.isNotHandicapBenefit")</li>
+                                        }
+                                    </ul>
+                                    <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.subsidizeQuotation.prerequisite")</h4>
+                                    <ul class="pl-1">
+                                        <li class="@if(quotation.hasChildrenLessThanSix) {checked} else {times}">@messages("views.front.parentOnboarding.subsidizeQuotation.prerequisite.childLessThan6")</li>
+                                        <li class="@if(quotation.isParentWorking) {checked} else {times}">@messages("views.front.parentOnboarding.subsidizeQuotation.prerequisite.parentWorking")</li>
+                                        <li class="@if(quotation.isLessThanMinimumHour) {times} else {checked}">@messages("views.front.parentOnboarding.subsidizeQuotation.prerequisite.minimumHour")</li>
+                                        <li class="checked">@messages("views.front.parentOnboarding.subsidizeQuotation.prerequisite.maximumSupport")</li>
+                                    </ul>
+                                </div>
+
+                                <div id="eligibility" class="mt-3 mb-3 pt-2 pb-2">
+                                    @if(!quotation.isSubsidize) {
+                                            <span class="blue font-weight-bold">@messages("views.front.parentOnboarding.quotation.nonEligibleForSubsidy")</span>
+                                    } else {
+                                            <span class="blue">@Html(messages("views.front.parentOnboarding.quotation.eligibleForSubsidy", quotation.getSubsidizeAmount))</span>
+                                    }
+                                </div>
+
+                                @if(quotation.isSubsidize && quotation.isLessThanMinimumHour) {
+                                    <h4 id="subsidize-quotation-less-than-16-hours" class="quotation-title pink">@messages("views.front.parentOnboarding.subsidizeQuotation.eligibility.subsidizeQuotation.lessThan16hours")</h4>
+                                    <div id="minimum-hour-quotation-price" class="quotation-price">
+                                        <div id="minimum-hour-quotation-price-duty-free">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.withoutTaxes")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getMinimumHourCostDutyFree</div>
+                                        </div>
+                                        <div id="minimum-hour-quotation-duty">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.duty")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getMinimumHourDutyCost</div>
+                                        </div>
+                                        <div id="minimum-hour-quotation-price-including-taxes-before-cmg-and-credit-discount">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesBeforeCmgAndCreditReduction")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getMinimumHourCostIncludingTaxesBeforeCmgAndCreditDiscount</div>
+                                        </div>
+                                        <div id="minimum-hour-quotation-price-including-taxes-after-cmg-discount">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgDiscount")</div>
+                                            <div class="value euro pb-2 font-weight-bold">@quotation.getMinimumHourCostIncludingTaxesAfterCmgDiscount</div>
+                                        </div>
+                                        <div id="minimum-hour-quotation-price-including-taxes-after-cmg-and-credit-discount">
+                                            <div class="value-title blue font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgAndCreditDiscount")</div>
+                                            <div class="value pink pb-2 font-weight-bold">@messages("views.front.parentOnboarding.baseQuotation.includingTaxesAfterCmgAndCreditDiscount.cost", quotation.getMinimumHourCostIncludingTaxesAfterCmgAndCreditDiscount, quotation.getMinimumHourCostPerHourIncludingTaxesAfterCmgAndCreditDiscount)</div>
+                                        </div>
+                                        <div class="asterisk pt-2"><span>@Html(messages("views.front.parentOnboarding.subsidizeQuotation.cmgDiscount.details"))</span></div>
+                                        <div class="asterisk"><span>@messages("views.front.parentOnboarding.subsidizeQuotation.taxCreditDoubleAsterisk.details")</span></div>
+                                    </div>
+                                </div>
+                                } else {
+                                    @if(quotation.isSubsidize && !quotation.isLessThanMinimumHour) {
+                                        @quotationDetail
+                                        </div>
+                                    } else {
+                                        @transparency
+                                        @regards
+                                        </div>
+                                        @footer
+                                    }
+                                }
+                        </div>
+                    </div><!-- Page 2 -->
+                    @if(quotation.isSubsidize) {
+                        <div id="page-3" class="page">
+                            @header
+                            <div class="inner-page">
+                                <div>
+                                    @if(quotation.isSubsidize && quotation.isLessThanMinimumHour) {
+                                        @quotationDetail
+                                    }
+                                    @transparency
+                                    @regards
+                                </div>
+                                @footer
+                            </div>
+                        </div><!-- Page 3 -->
+                    }
+
+@*                    <div id="payment-refund" class="pb-4">*@
+@*                        <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.paymentRefund.outline")</h4>*@
+@*                        <ul class="pl-1">*@
+@*                            <li class="no-style">@messages("views.front.parentOnboarding.paymentRefund.outline.invoice")</li>*@
+@*                            <li class="no-style">@Html(messages("views.front.parentOnboarding.paymentRefund.outline.paymentMethod"))</li>*@
+@*                            <li class="no-style">@messages("views.front.parentOnboarding.paymentRefund.outline.salary")</li>*@
+@*                            <li class="no-style">@messages("views.front.parentOnboarding.paymentRefund.outline.subsidize")</li>*@
+@*                        </ul>*@
+@*                        <img src="@routes.Assets.at("img/payment_refund.png")" alt="" class="w-100">*@
+@*                    </div>*@
+@*                    <div id="care-content" class="pb-4">*@
+@*                        <h4 class="quotation-title pink">@messages("views.front.parentOnboarding.paymentRefund.careContent")</h4>*@
+@*                        <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.paymentRefund.careContent.homeCare")</div>*@
+@*                        <div class="pb-3">@Html(messages("views.front.parentOnboarding.paymentRefund.careContent.homeCare1"))</div>*@
+@*                        <div class="pb-3">@messages("views.front.parentOnboarding.paymentRefund.careContent.homeCare2")</div>*@
+@*                        <div class="blue font-weight-bold">@messages("views.front.parentOnboarding.paymentRefund.careContent.mobilityCare")</div>*@
+@*                        <div class="pb-3">@messages("views.front.parentOnboarding.paymentRefund.careContent.mobilityCare1")</div>*@
+@*                    </div>*@
+                </div>
+            </section>
+        </form>
+        <div id="stepper-nav" class="pb-4">
+            <div class="banner-wrapper">
+                <div id="nav-location">
+                    <div class="row">
+                        <div class="col-8 m-auto">
+                            <button id="accept-quotation-button" class="btn btn-cyan btn-block login-btn" type="submit" form="onboarding-form">@messages("views.front.parentOnboarding.acceptQuotation")</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

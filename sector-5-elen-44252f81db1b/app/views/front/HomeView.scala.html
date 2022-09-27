@@ -1,0 +1,81 @@
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@front.common.BaseView() {
+    <div class="content">
+        <section class="section section-parent-space">
+            <div class="container-fluid">
+                <div class="banner-wrapper">
+                    <div class="banner-header text-center">
+                        <h1>@messages("views.front.home.findSitter.title")</h1>
+                        <p>@messages("views.front.home.findSitter.subTitle")</p>
+                    </div>
+                    <div class="row justify-content-center">
+                        <form method="get" action="@controllers.routes.OnboardingController.GET_ParentOnboarding">
+                            <button type="submit" class="btn btn-blue btn-rounded btn-lg">@messages("views.front.home.findSitter.button")</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-sitter-space">
+            <div class="container-fluid">
+                <div class="banner-wrapper">
+                    <div class="banner-header text-center">
+                        <h2>@messages("views.front.home.becameSitter.title")</h2>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="justify-content-center">
+                            <button type="button" class="btn btn-blue-o btn-rounded btn-lg">@messages("views.front.home.becameSitter.button")</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-how-it-works">
+            <div class="container-fluid">
+                <div class="section-header text-center">
+                    <h2>@messages("views.front.home.howItWorks.text")</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="card flex-fill">
+                            <img alt="Step 1" src="@routes.Assets.at("assets/img/img-01.jpg")" class="card-img-top">
+                            <div class="card-header text-center">
+                                <h5 class="card-title mb-0">@messages("views.front.home.step1.title")</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="card-text">@messages("views.front.home.step1.text")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="card flex-fill">
+                            <img alt="Step 1" src="@routes.Assets.at("assets/img/img-01.jpg")" class="card-img-top">
+                            <div class="card-header text-center">
+                                <h5 class="card-title mb-0">@messages("views.front.home.step2.title")</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="card-text">@messages("views.front.home.step2.text")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="card flex-fill">
+                            <img alt="Step 1" src="@routes.Assets.at("assets/img/img-01.jpg")" class="card-img-top">
+                            <div class="card-header text-center">
+                                <h5 class="card-title mb-0">@messages("views.front.home.step3.title")</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="card-text">@messages("views.front.home.step3.text")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+}

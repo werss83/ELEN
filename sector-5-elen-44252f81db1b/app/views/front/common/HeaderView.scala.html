@@ -1,0 +1,128 @@
+@import twirl.helper.LoggedAccount
+@import security.Role
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@accountOption = @{LoggedAccount.getOption}
+@realAccount = @{LoggedAccount.getRealAccountOption}
+
+<header class="header">
+    <nav class="navbar navbar-expand-lg header-nav">
+        <div class="navbar-header">
+            <a id="mobile_btn" href="javascript:void(0);">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+            <a href="@routes.HomeController.GET_Home()" class="navbar-brand logo blue">
+@*                <img src="@routes.Assets.at("assets/img/logo.png")" class="img-fluid" alt="Logo">*@
+                <div class="text-logo">@messages("company.project.name")</div>
+            </a>
+        </div>
+        <div class="main-menu-wrapper">
+            <div class="menu-header">
+                <a href="@routes.HomeController.GET_Home()" class="menu-logo blue">
+                    <div class="text-logo">@messages("company.project.name")</div>
+                </a>
+                <a id="menu_close" class="menu-close blue" href="javascript:void(0);">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+            <ul class="main-nav">
+                <li @if(request.path().equals("/")){class="active"}>
+                    <a class="blue" href="@routes.HomeController.GET_Home()">Home</a>
+                </li>
+                <li>
+                    <a class="blue" href="@messages("views.front.common.header.blog.url")">@messages("views.front.common.header.blog")</a>
+                </li>
+
+                @if(accountOption.isDefined) {
+                    @defining(accountOption.get) { account =>
+                        @if(account.hasRole(Role.ROLE_PARENT)) {
+                            <li>
+                                <a class="blue" href="@controllers.parent.routes.ParentController.GET_ParentDashboard()">@messages("views.front.common.header.parentDashboard")</a>
+                            </li>
+                        }
+                        @if(account.hasRole(Role.ROLE_SITTER)) {
+                            <li>
+                                <a class="blue" href="@controllers.sitter.routes.SitterController.GET_SitterDashboard()">@messages("views.front.common.header.sitterDashboard")</a>
+                            </li>
+                        }
+                        @if(account.hasRole(Role.ROLE_ADMIN)) {
+                            <li>
+                                <a class="blue" href="@controllers.admin.routes.AdminController.GET_AdminDashboard()">@messages("views.front.common.header.adminDashboard")</a>
+                            </li>
+                        }
+                    }
+                }
+
+                @*
+                <li class="has-submenu">
+                    <a href="">Doctors <i class="fas fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="doctor-dashboard.html">Doctor Dashboard</a></li>
+                        <li><a href="appointments.html">Appointments</a></li>
+                        <li><a href="schedule-timings.html">Schedule Timing</a></li>
+                        <li><a href="my-patients.html">Patients List</a></li>
+                        <li><a href="patient-profile.html">Patients Profile</a></li>
+                        <li><a href="chat-doctor.html">Chat</a></li>
+                        <li><a href="invoices.html">Invoices</a></li>
+                        <li><a href="doctor-profile-settings.html">Profile Settings</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                        <li><a href="doctor-register.html">Doctor Register</a></li>
+                    </ul>
+                </li>
+                *@
+
+                @* This is the login link for mobile user *@
+                <li class="login-link">
+                    <a class="blue" href="@routes.StandardLoginController.GET_Login()">@messages("common.login")</a>
+                </li>
+                <li class="login-link">
+                    @if(accountOption.nonEmpty) {
+                        <a class="blue" href="@org.pac4j.play.routes.LogoutController.logout()">@messages("common.logout")</a>
+                    } else {
+                        <a class="blue" href="@routes.StandardLoginController.GET_Registration()">@messages("common.signup")</a>
+                    }
+                </li>
+            </ul>
+        </div>
+
+        @* This part is only available out of mobile *@
+        @* TODO : Add profile picture ? *@
+        <ul class="nav header-navbar-rht">
+            @*
+            <li class="nav-item contact-item">
+                <div class="header-contact-img">
+                    <i class="far fa-hospital"></i>
+                </div>
+                <div class="header-contact-detail">
+                    <p class="contact-header">Contact</p>
+                    <p class="contact-info-header"> +1 315 369 5943</p>
+                </div>
+            </li>
+            *@
+            @if(realAccount.isDefined) {
+                <li class="nav-item dropdown has-arrow">
+                    <a href="@controllers.admin.routes.UserManageController.GET_ExitImpersonate()" class="nav-link btn btn-outline-danger">
+                        <span class="fe fe-close"></span>
+                        <b>@messages("views.back.header.exitImpersonate")</b>
+                    </a>
+                </li>
+            }
+            @if(accountOption.nonEmpty) {
+                <li>
+                    <a class="nav-link header-login btn-blue-o" href="@org.pac4j.play.routes.LogoutController.logout()">@messages("common.logout")</a>
+                </li>
+            } else {
+                <li>
+                    <a class="blue" href="@routes.StandardLoginController.GET_Login()">@messages("common.login")</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link header-login btn-blue-o" href="@routes.StandardLoginController.GET_Registration()">@messages("common.signup")</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</header>

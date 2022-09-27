@@ -1,0 +1,46 @@
+# elen stack
+version: '3.8'
+networks:
+    lan:
+        driver: overlay
+    default-net:
+        external: true
+        name: default-net
+
+services:
+    redis:
+        image: redis:6
+        networks:
+            - "lan"
+        volumes:
+            - "/srv/docker/elen/redis:/data"
+    postgres:
+        image: dontpanic57/postgis:12
+        networks:
+            - "lan"
+        volumes:
+            - "/srv/docker/elen/postgres:/var/lib/postgresql/data"
+        environment:
+            - POSTGRES_USER=pguser
+            - POSTGRES_PASSWORD=pgpassword
+            - POSTGRES_DB=elen
+        ports:
+            - 10059:5432
+    app:
+        image: registry.jackson42.com/dontpanic57/elen:latest
+        networks:
+            - "lan"
+            - "default-net"
+        depends_on:
+            - redis
+            - postgres
+        environment:
+            - LOGGER_FILE=conf/logback.xml
+            - SERVER_BASE_URL=https://elen-prototype.sector5.fr
+            - PLAY_HTTP_SECRETKEY=jVGxkvrghtvdNaaRiYGDau4P5pgmminWW1uhMi8SOJz84isrtjnoJrCQMopew6aZ
+            - JDBC_DEFAULT_URL=jdbc:postgresql_lwgis://postgres/elen?autoReconnect=true
+            - JDBC_DEFAULT_USERNAME=pguser
+            - JDBC_DEFAULT_PASSWORD=pgpassword
+            - PLAY_CACHE_REDIS_HOST=redis
+        ports:
+            - 10060:9000

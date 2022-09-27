@@ -1,0 +1,32 @@
+@import models.account.AccountModel
+@(
+        account: AccountModel,
+        cafNumberMissing: Boolean,
+        incompleteChildrenProfile: Boolean,
+        noChildren: Boolean,
+        under3yo: Boolean,
+        noBooking: Boolean
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div>
+    @if(cafNumberMissing) {
+        <span class="badge badge-pill bg-danger inv-badge">@messages("views.back.admin.user.problems.missingCafNumber")</span>
+        <br/>
+    }
+    @if(incompleteChildrenProfile) {
+        <span class="badge badge-pill bg-danger inv-badge">@messages("views.back.admin.user.problems.incompleteChildrenProfile")</span>
+        <br/>
+    }
+    @if(noChildren) {
+        <span class="badge badge-pill bg-danger-light inv-badge">@messages("views.back.admin.user.problems.noChildren")</span>
+        <br/>
+    }
+    @if(under3yo) {
+        <span class="badge badge-pill bg-warning inv-badge">@messages("views.back.admin.user.problems.under3yo")</span>
+        <br/>
+    }
+    @if(noBooking) {
+        <span class="badge badge-pill bg-warning-light inv-badge">@messages("views.back.admin.user.problems.noBooking")</span>
+        <br/>
+    }
+</div>

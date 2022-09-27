@@ -1,0 +1,56 @@
+<!-- https://www.playframework.com/documentation/latest/SettingsLogger -->
+<configuration>
+
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%coloredLevel %logger{15} - %message%n%xException{10}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+    <logger name="play" level="INFO"/>
+    <logger name="application" level="DEBUG"/>
+    <logger name="common" level="DEBUG"/>
+
+    <!-- Default dev options -->
+    <logger name="actions" level="DEBUG"/>
+    <logger name="actors" level="DEBUG"/>
+    <logger name="behavior" level="DEBUG"/>
+    <logger name="controllers" level="DEBUG"/>
+    <logger name="entities" level="DEBUG"/>
+    <logger name="exceptions" level="DEBUG"/>
+    <logger name="form" level="DEBUG"/>
+    <logger name="models" level="DEBUG"/>
+    <logger name="modules" level="DEBUG"/>
+    <logger name="redis" level="DEBUG"/>
+    <logger name="security" level="DEBUG"/>
+    <logger name="services" level="DEBUG"/>
+    <logger name="system" level="DEBUG"/>
+    <logger name="utils" level="DEBUG"/>
+    <!-- EOS -->
+
+    <!-- Specific dev options -->
+    <logger name="modules" level="TRACE"/>
+    <logger name="modules.SecurityModule" level="TRACE"/>
+    <logger name="org.pac4j.play" level="DEBUG"/>
+    <logger name="org.pac4j.core.engine" level="DEBUG"/>
+    <!-- EOS -->
+
+
+    <logger name="io.ebean.SQL" level="TRACE"/>
+    <logger name="com.zaxxer.hikari" level="INFO"/>
+    <logger name="play-rconf" level="INFO"/>
+
+    <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
+    <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF"/>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNCSTDOUT"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,49 @@
+@import back.component.SimpleInput
+@import views.html.helper.CSRF
+@import form.profile.ProfileForm
+@import play.data.Form
+
+@(form: Form[ProfileForm])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="row">
+            <div class="col-sm-12 col-lg-6">
+                @SimpleInput(form, form.field("firstName"), label = "views.back.userProfile.form.firstName")
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                @SimpleInput(form, form.field("lastName"), label = "views.back.userProfile.form.lastName")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                @SimpleInput(form, form.field("email"), label = "views.back.userProfile.form.email", fieldType = "email")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                @SimpleInput(form, form.field("phoneNumber"), label = "views.back.userProfile.form.phoneNumber")
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="row">
+            <div class="col-12">
+                @SimpleInput(form, form.field("address"), label = "views.back.userProfile.form.address", inputId = "address")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                @SimpleInput(form, form.field("postalCode"), label = "views.back.userProfile.form.postalCode", inputId = "postalCode")
+            </div>
+            <div class="col-sm-12 col-md-6">
+                @SimpleInput(form, form.field("city"), label = "views.back.userProfile.form.city", inputId = "city")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                @SimpleInput(form, form.field("additionalAddress"), label = "views.back.userProfile.form.additionalAddress")
+            </div>
+        </div>
+    </div>
+</div>

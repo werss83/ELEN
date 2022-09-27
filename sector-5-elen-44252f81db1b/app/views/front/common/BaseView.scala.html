@@ -1,0 +1,67 @@
+@(pageStyle: Html = null, pageScript: Html = null, bodyClass: String = null)(content: Html)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="@messages.lang().code()">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="author" content="Elen"/>
+        <title>Elen</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/bootstrap.min.css")">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/fontawesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/all.min.css")">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/style.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("color/color.css")">
+
+        @if(pageStyle != null) {
+            @pageStyle
+        }
+    </head>
+    <body class="@bodyClass">
+        <div class="main-wrapper">
+            @front.common.HeaderView()
+            @if(!request.flash().data().isEmpty) {
+                <div class="m-3">
+                    @for((key, value) <- request.flash().data()) {
+                        <div class="alert alert-@key alert-dismissible fade show" role="alert">
+                            @messages(value)
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    }
+                </div>
+            }
+            @content
+            @front.common.FooterView()
+        </div>
+    </body>
+
+    <!-- jQuery -->
+    <script src="@routes.Assets.at("assets/js/jquery.min.js")"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="@routes.Assets.at("assets/js/popper.min.js")"></script>
+    <script src="@routes.Assets.at("assets/js/bootstrap.min.js")"></script>
+
+    <!-- Slick JS -->
+    <script src="@routes.Assets.at("assets/js/slick.js")"></script>
+
+    <!-- Custom JS -->
+    <script src="@routes.Assets.at("assets/js/script.js")"></script>
+
+    @if(pageScript != null) {
+        @pageScript
+    }
+</html>

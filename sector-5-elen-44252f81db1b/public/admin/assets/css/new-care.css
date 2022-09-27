@@ -1,0 +1,190 @@
+.section {
+    padding: 0 0 20px;
+}
+
+.step {
+    display: none;
+}
+
+#nav-location {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Care type step */
+#care-type-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 1px 12px;
+}
+
+#care-type-wrapper .radio-input-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+#care-type-wrapper label {
+    text-align: center;
+    border: 2px solid var(--main-blue-color);
+    border-radius: 5px;
+    padding: 60px 0;
+    width: 100%;
+    height: 100%;
+    margin: 1px;
+    cursor: pointer;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+}
+
+#care-type-wrapper input[type="radio"] {
+    opacity: 0;
+    outline: none;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    margin-left: 15px;
+}
+
+#care-type-wrapper input[type="radio"]:checked + label {
+    border: 3px solid var(--main-blue-color);
+    margin: 0;
+}
+
+#care-type-wrapper label span:first-child {
+    font-size: 26px;
+}
+
+.care-icon {
+    font-size: 26px;
+}
+
+/* One time care step */
+#one-time-care-date,
+#one-time-care-start-hour ~ .ui-timepicker-select ~ .select2-container .select2-selection {
+    background-color: #15ddff51;
+    border: none;
+    color: black;
+    border-radius: 0;
+}
+
+.ui-datepicker {
+    z-index: 10 !important;
+}
+
+.range-quantity {
+    background-color: var(--main-cyan-color) !important;
+}
+
+.range-handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.range-bar {
+    margin-top: 10px;
+}
+
+/* Recurrent care step */
+#calendar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#calendar-validity {
+    opacity: 0;
+    outline: none;
+    border: none;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+}
+
+.fc-header-toolbar {
+    align-self: flex-start;
+}
+
+.fc-unthemed td.fc-today {
+    background-color: #ffffff;
+}
+
+td.fc-axis.fc-time.fc-widget-content {
+    font-family: Helvetica, sans-serif;
+}
+
+.fc-toolbar.fc-header-toolbar {
+    width: 100%;
+}
+
+.fc-event {
+    background-color: var(--main-blue-color) !important;
+}
+
+.event-close-button {
+    position: absolute;
+    z-index: 10;
+    top: -1px;
+    right: -4px;
+    color: #343a40;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 54%, rgba(255, 255, 255, 0) 49%, rgba(255, 255, 255, 0) 100%);
+    display: none;
+}
+
+.fc-event:hover > .event-close-button {
+    display: block;
+}
+
+.step h2 {
+    text-transform: initial !important;
+}
+
+.event-close-button:hover,
+.event-close-button:active,
+.event-close-button:focus {
+    cursor: pointer;
+}
+
+#event-day {
+    width: 120px;
+}
+
+#error-information {
+    display: none;
+}
+
+.event-hour {
+    width: 120px;
+}
+
+.event-hour ~ .select2 {
+    margin-right: .5rem;
+}
+
+.fc-time-grid-event .fc-time {
+    font-size: .75em !important;
+}
+
+@media only screen and (max-width: 991.98px) {
+    .fc-event-container .fc-time {
+        transform: rotate(90deg);
+    }
+
+    .fc-time-grid-event .fc-content {
+        overflow: visible;
+    }
+
+    #add-event-modal .modal-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    tr.fc-minor td {
+        height: 17px !important;
+    }
+}

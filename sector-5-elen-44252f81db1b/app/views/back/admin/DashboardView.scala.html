@@ -1,0 +1,91 @@
+@import entities.dto.admin.AdminDashboardDTO
+@(dashboard: AdminDashboardDTO)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.admin.common.BaseView(title = "views.back.admin.dashboard.title", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard")
+)) {
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="dash-widget-header">
+                        <span class="dash-widget-icon text-primary border-primary">
+                            <i class="fe fe-users"></i>
+                        </span>
+                        <div class="dash-count">
+                            <h3>@dashboard.getNumberOfParent</h3>
+                        </div>
+                    </div>
+                    <div class="dash-widget-info">
+                        <h6 class="text-muted">@messages("views.back.admin.dashboard.parents")</h6>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-primary w-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="dash-widget-header">
+                        <span class="dash-widget-icon text-success">
+                            <i class="fe fe-credit-card"></i>
+                        </span>
+                        <div class="dash-count">
+                            <h3>@dashboard.getNumberOfSitter</h3>
+                        </div>
+                    </div>
+                    <div class="dash-widget-info">
+                        <h6 class="text-muted">@messages("views.back.admin.dashboard.sitters")</h6>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-success w-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*
+        <div class="col-xl-3 col-sm-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="dash-widget-header">
+                        <span class="dash-widget-icon text-danger border-danger">
+                            <i class="fe fe-money"></i>
+                        </span>
+                        <div class="dash-count">
+                            <h3>TODO</h3>
+                        </div>
+                    </div>
+                    <div class="dash-widget-info">
+                        <h6 class="text-muted">TODO</h6>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-danger w-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="dash-widget-header">
+                        <span class="dash-widget-icon text-warning border-warning">
+                            <i class="fe fe-folder"></i>
+                        </span>
+                        <div class="dash-count">
+                            <h3>TODO</h3>
+                        </div>
+                    </div>
+                    <div class="dash-widget-info">
+                        <h6 class="text-muted">TODO</h6>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-warning w-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        *@
+    </div>
+}

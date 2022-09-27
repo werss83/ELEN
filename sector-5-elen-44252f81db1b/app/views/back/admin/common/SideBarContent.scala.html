@@ -1,0 +1,47 @@
+@import play.mvc.Call
+
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@underlying(call: Call, condition: (String, String) => Boolean)(content: Html) = {
+    <li class="@if(condition.apply(request.path, call.url)) { active }">
+        <a href="@call" class="cyan-item">
+        @content
+        </a>
+    </li>
+}
+
+@condEquals(s1: String, s2: String) = @{ s1.equals(s2) }
+@condStartsWith(s1: String, s2: String) = @{ s1.startsWith(s2) }
+@entryEq(call: Call)(content: Html) = { @underlying(call, condEquals)(content) }
+@entryStartsWith(call: Call)(content: Html) = { @underlying(call, condStartsWith)(content) }
+
+<ul>
+    @entryEq(controllers.admin.routes.AdminController.GET_AdminDashboard()) {
+        <i class="fe fe-home"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.dashboard")</span>
+    }
+    @entryStartsWith(controllers.admin.routes.UserManageController.GET_Users()) {
+        <i class="fe fe-users"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.users")</span>
+    }
+    @entryStartsWith(controllers.admin.routes.OneTimeCareController.GET_Cares()) {
+        <i class="fe fe-clock"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.oneTimeCare")</span>
+    }
+    @entryStartsWith(controllers.admin.routes.ScheduledCareController.GET_Cares()) {
+        <i class="fe fe-clock"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.scheduledCare")</span>
+    }
+    @entryStartsWith(controllers.admin.routes.AllCareController.GET_Cares()) {
+        <i class="fe fe-clock"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.allCare")</span>
+    }
+    @entryStartsWith(controllers.admin.routes.ExportController.GET_Export()) {
+        <i class="fe fe-download"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.exports")</span>
+    }
+    @entryStartsWith(controllers.routes.ProfileController.GET_AdminProfile()) {
+        <i class="fe fe-user"></i>
+        <span class="sidebar-link">@messages("views.back.admin.common.sideBar.myProfile")</span>
+    }
+</ul>

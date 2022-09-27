@@ -1,0 +1,104 @@
+@import entities.dto.admin.OneTimeCareDTO
+@import models.care.enumeration.EffectiveCareStatus
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.admin.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.admin.cares.scheduled.caresList.title", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard"),
+    (null, "views.back.admin.common.sideBar.scheduledCare")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table id="cares-list" class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.id")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.status")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.startDate")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.endDate")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.duration")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.city")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.parent")</th>
+                                        <th>@messages("views.back.admin.cares.scheduled.caresList.column.actions")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.css")">
+}
+
+@js = {
+        <!-- Datatables JS -->
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/js/datatables-custom.js")"></script>
+    <script type="application/javascript">
+            $(document).ready(function () {
+                table = $('#cares-list').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@controllers.admin.routes.ScheduledCareController.POST_CaresAjaxList()",
+                        data: function (d) {
+                            return JSON.stringify({parameters: d});
+                        }
+                    },
+                    searching: true,
+                    dom: "ltipr",
+                    columns: [{
+                        name: "id",
+                        orderable: true,
+                        searchable: false
+                    }, {
+                        name: "status",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "startDate",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "endDate",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "duration",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "city",
+                        orderable: true,
+                        searchable: false
+                    }, {
+                        name: "parent",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "actions",
+                        orderable: false,
+                        searchable: true
+                    }],
+                    order: [[0, "desc"]],
+                    columnDefs: []
+                });
+                // $("#status-search").DataTablesSearch(table, "status:name")
+                // $("#date-search").DataTablesSearch(table, "startDate:name")
+                // $("#parent-search").DataTablesSearch(table, "parent:name")
+                // $("#sitter-search").DataTablesSearch(table, "sitter:name")
+            });
+    </script>
+}

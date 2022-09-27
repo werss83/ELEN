@@ -1,0 +1,25 @@
+@import form.parent.ParentCriteriaForm
+@import views.html.back.component.SimpleCheckbox
+@import play.data.Form
+@import views.html.back.component.CheckboxGroup
+@(
+        form: Form[ParentCriteriaForm],
+        blockClass: String = "",
+        blockId: String = null,
+        extraAttrs: String = null,
+        preHtml: Html = null,
+        postHtml: Html = null
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div class="@blockClass" @if(blockId != null){ id="@blockId" } @Html(extraAttrs)>
+    @preHtml
+    @CheckboxGroup("views.back.parent.form.parentAttributes.basicInfo") {
+        @SimpleCheckbox(form, form.field("sitterWithCar"), label = "views.back.parent.form.parentAttributes.sitterWithCar")
+        @SimpleCheckbox(form, form.field("speakEnglish"), label = "views.back.parent.form.parentAttributes.speakEnglish")
+        @SimpleCheckbox(form, form.field("trainedSitter"), label = "views.back.parent.form.parentAttributes.trainedSitter")
+        @SimpleCheckbox(form, form.field("experiencedSitter"), label = "views.back.parent.form.parentAttributes.experiencedSitter")
+        @SimpleCheckbox(form, form.field("womanSitter"), label = "views.back.parent.form.parentAttributes.womanSitter")
+        @SimpleCheckbox(form, form.field("allowedSmokingSitter"), label = "views.back.parent.form.parentAttributes.allowedSmokingSitter")
+    }
+    @postHtml
+</div>

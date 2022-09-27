@@ -1,0 +1,113 @@
+@import play.data.Form
+@import form.sitter.SitterAttributesForm
+@import views.html.back.component.CheckboxGroup
+@import views.html.back.component._
+@import models.sitter.enumeration._
+@import models.sitter.SitterModel
+@(
+        form: Form[SitterAttributesForm],
+        sitter: SitterModel = null,
+        blockClass: String = "",
+        blockId: String = null,
+        extraAttrs: String = null,
+        preHtml: Html = null,
+        postHtml: Html = null
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div class="@blockClass" @if(blockId != null){ id="@blockId" } @Html(extraAttrs)>
+    @preHtml
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    @CheckboxGroup("views.back.sitter.form.parentAttributes.basicInfo") {
+                        @SimpleCheckbox(form, form.field("sitterWoman"), label = "views.back.sitter.form.parentAttributes.woman")
+                        @SimpleCheckbox(form, form.field("sitterSmoke"), label = "views.back.sitter.form.parentAttributes.smoke")
+                    }
+                </div>
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterGuardTypes"), SitterGuardType.selectData, label = "views.back.sitter.form.parentAttributes.sitterCareTypes")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterExperiences"), SitterExperience.selectData, label = "views.back.sitter.form.parentAttributes.sitterExperiences")
+                </div>
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterExperienceTypes"), SitterExperienceType.selectData, label = "views.back.sitter.form.parentAttributes.sitterExperienceTypes")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    @SimpleInput(form, form.field("socialSecurityNumber"), label = "views.back.sitter.form.parentAttributes.socialSecurityNumber")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    @SimpleSelect(form, form.field("sitterSituation"), SitterSituation.selectData, label = "views.back.sitter.form.parentAttributes.sitterSituation")
+                </div>
+                <div class="col-lg-12">
+                    @SimpleText(form, form.field("sitterSituationDetail"), label = "views.back.sitter.form.parentAttributes.sitterSituationDetail", rows = 3)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterCertifications"), SitterCertification.selectData, label = "views.back.sitter.form.parentAttributes.sitterCertifications")
+                </div>
+                <div class="col-lg-6">
+                    @SimpleInput(form, form.field("sitterExtraCertification"), label = "views.back.sitter.form.parentAttributes.sitterExtraCertification")
+                </div>
+            </div>
+            <div class="row">
+                @if(sitter != null) {
+                    <div class="col-12 text-center">
+                        <img src="@controllers.sitter.routes.PictureController.GET_ServePicture(sitter)" height="200px" />
+                    </div>
+                }
+                <div class="col-12">
+                    @SimpleInput(form, form.field("sitterPicture"), label = "views.back.sitter.form.parentAttributes.sitterPicture", fieldType = "file", retrieveValue = false)
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterSpokenLanguages"), SitterSpokenLanguage.selectData, label = "views.back.sitter.form.parentAttributes.sitterSpokenLanguages")
+                </div>
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterHomeworkCapabilities"), SitterHomeworkCapability.selectData, label = "views.back.sitter.form.parentAttributes.sitterHomeworkCapabilities")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    @SimpleSelect(form, form.field("sitterCarSituation"), SitterCarSituation.selectData, label = "views.back.sitter.form.parentAttributes.sitterCarSituation")
+                </div>
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterPublicTransports"), SitterPublicTransport.selectData, label = "views.back.sitter.form.parentAttributes.sitterPublicTransports")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    @MultipleSelect(form, form.field("sitterAvailabilities"), SitterAvailability.selectData, label = "views.back.sitter.form.parentAttributes.sitterAvailabilities")
+                </div>
+                <div class="col-lg-6">
+                    @SimpleInput(form, form.field("sitterBirthday"), label = "views.back.sitter.form.parentAttributes.sitterBirthday", inputExtraClass = "date-input", placeholder = "__/__/____")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    @SimpleText(form, form.field("sitterCommendation"), label = "views.back.sitter.form.parentAttributes.sitterCommendation")
+                </div>
+                <div class="col-lg-12">
+                    @SimpleText(form, form.field("sitterInformation"), label = "views.back.sitter.form.parentAttributes.sitterInformation")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                @SimpleText(form, form.field("pastExperience"), label = "views.back.sitter.form.parentAttributes.pastExperience", rows = 3)
+                </div>
+            </div>
+        </div>
+    </div>
+    @postHtml
+</div>

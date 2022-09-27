@@ -1,0 +1,20 @@
+@import models.unavailability.EffectiveUnavailabilityModel
+@(unavailability: EffectiveUnavailabilityModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@account = @{
+    if(unavailability != null) {
+        unavailability.getPlannedUnavailability.getSitter.getAccount
+    } else {
+        null
+    }
+}
+
+<div class="text-center">
+    @if(account != null) {
+        @account.getFullName
+        <br/>
+        @account.getEmail
+    } else {
+        -
+    }
+</div>

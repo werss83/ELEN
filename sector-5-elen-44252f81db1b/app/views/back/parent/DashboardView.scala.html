@@ -1,0 +1,57 @@
+@import play.api.mvc.Call
+
+@(scheduledHours: Double, remainingHours: Double)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@tile()(content: Html) = {
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+        <div class="card">
+            @content
+        </div>
+    </div>
+}
+
+@linkTile(call: Call, text: String, icon: String) = {
+    @tile() {
+        <a href="@call">
+            <div class="card-body">
+                <div class="text-center">
+                    <span class="dash-widget-icon cyan border-primary mt-3" style="border:0; font-size: 2em;">
+                        <i class="fe @icon" style="font-size: 2.5em;"></i>
+                    </span>
+                    <p class="blue" style="font-size: 1.5em;">
+                    @messages(text)
+                    </p>
+                </div>
+            </div>
+        </a>
+    }
+}
+
+@back.parent.common.BaseView(title = "views.back.parent.dashboard.title", nav = Array(
+    (controllers.parent.routes.ParentController.GET_ParentDashboard(), "views.back.parent.common.sideBar.dashboard")
+)) {
+    <div id="dashboard-panel" class="row">
+        @tile() {
+            <div class="text-center pt-4 pb-5 pl-3 pr-3">
+                <h4 class="blue pt-3">
+                    Heures réservées ce mois-ci: @{String.format("%.1fh", scheduledHours)}
+                </h4>
+                @if(scheduledHours > 16.0) {
+                    <h5 class="blue">Vous êtes éligible aux aides de la CAF.</h5>
+                } else {
+                    <h5 class="blue">Il vous manque @{String.format("%.1fh", remainingHours)} pour être éligible aux aides de la CAF.</h5>
+                }
+            </div>
+        }
+
+        @linkTile(controllers.parent.routes.CareController.GET_ScheduleNewCare(), "views.back.parent.common.sideBar.newCare", "fe-calendar")
+
+        @linkTile(controllers.parent.routes.CareController.GET_CurrentCare(), "views.back.parent.common.sideBar.currentCare", "fe-clock")
+
+        @linkTile(controllers.parent.routes.CafController.GET_Caf(), "views.back.parent.common.sideBar.cafInfo", "fe-pencil")
+
+        @linkTile(controllers.parent.routes.ChildrenController.GET_MyChildren(), "views.back.parent.common.sideBar.myChildren", "fe-users")
+
+        @linkTile(controllers.routes.ProfileController.GET_ParentProfile(), "views.back.parent.common.sideBar.myProfile", "fe-user")
+    </div>
+}

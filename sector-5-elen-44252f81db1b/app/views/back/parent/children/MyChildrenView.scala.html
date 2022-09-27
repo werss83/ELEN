@@ -1,0 +1,118 @@
+@import entities.dto.parent.ChildrenDTO
+@import entities.dto.parent.ChildrenDTO.ChildDTO
+@import models.children.ChildrenModel
+@import form.parent.ChildrenForm
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import views.html.back.component.SimpleSelect
+@import models.children.enumeration.UsualChildcare
+@(childrenDTO: ChildrenDTO)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@form = @{ childrenDTO.getCreateForm }
+@createRetrieveValue = @{ form.field("uid").value().isEmpty }
+@createModalId = @{ childrenDTO.getCreateModalId }
+
+@back.parent.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.parent.children.title", nav = Array(
+    (controllers.parent.routes.ParentController.GET_ParentDashboard(), "views.back.parent.common.sideBar.dashboard"),
+    (null, "views.back.parent.common.sideBar.myChildren")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6>
+                        <i class="fe fe-question"></i>
+                        @messages("views.back.parent.children.topMessage")
+                        <a data-toggle="modal" href="#aboutDependentChildren" class="cyan">
+                            @messages("views.back.parent.children.about.button")
+                        </a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="aboutDependentChildren" aria-hidden="true" role="dialog">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">@messages("views.back.parent.children.about.title")</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <p>
+                            @messages("views.back.parent.children.about.message")
+                        </p>
+                        <ul>
+                            <li>@messages("views.back.parent.children.about.criteria1")</li>
+                            <li>@messages("views.back.parent.children.about.criteria2")</li>
+                            <li>@messages("views.back.parent.children.about.criteria3")</li>
+                            <li>@messages("views.back.parent.children.about.criteria4")</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @for(child: ChildDTO <- childrenDTO.getData) {
+            @back.parent.children.ChildRender(child)
+        }
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>@messages("views.back.parent.children.add.title")</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <a data-toggle="modal" href="#@createModalId">
+                            <span class="dash-widget-icon cyan border-primary">
+                                <i class="fe fe-plus"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="@createModalId" aria-hidden="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">@messages("views.back.parent.children.myChildren.create.modal.title")</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <form method="POST" action="@controllers.parent.routes.ChildrenController.POST_CreateOrUpdateChild()">
+                            @CSRF.formField
+                            <div class="form-content p-2">
+                                @SimpleInput(form, form.field("firstname"), label = "views.back.parent.children.myChildren.form.firstName", retrieveValue = createRetrieveValue)
+                                @SimpleInput(form, form.field("birthday"), label = "views.back.parent.children.myChildren.form.birthday", inputExtraClass = "date-input", placeholder = "__/__/____", retrieveValue = createRetrieveValue)
+                                @SimpleSelect(form, form.field("usualCare"), label = "views.back.parent.children.child.form.usualCare", config = UsualChildcare.selectData)
+
+                                <button type="submit" class="btn btn-success">@messages("views.back.parent.children.myChildren.create.modal.confirm")</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.parent.children.myChildren.create.modal.cancel")</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+}
+
+@js = {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            @if(childrenDTO.getOpenModalId != null) {
+                @defining(childrenDTO.getOpenModalId) { modalId =>
+                    $("#@modalId").modal('show');
+                }
+            }
+        });
+    </script>
+}

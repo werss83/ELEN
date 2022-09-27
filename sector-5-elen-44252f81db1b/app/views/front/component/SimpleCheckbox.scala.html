@@ -1,0 +1,35 @@
+@import play.data.Form
+
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        label: String,
+        extraClass: String = "",
+        parentClass: String = "",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        beforeLabel: Html = null,
+        afterLabel: Html = null,
+        retrieveValue: Boolean = true
+)( implicit messages: play.i18n.Messages)
+
+@checked = @{retrieveValue && !field.value.getOrElse("false").equals("false")}
+
+@generateInput(iId: String, iClass: String, extraAttrs: Html) = {
+    <label><input id="@inputId" class="@iClass" type="checkbox" name="@field.name" @if(checked){checked="checked"} @extraAttrs>@beforeLabel @Html(messages(label))@afterLabel</label>
+}
+
+@front.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = "",
+    inputRender = generateInput,
+    label = null,
+    inputExtraClass = extraClass,
+    parentDivClass = parentClass,
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after)

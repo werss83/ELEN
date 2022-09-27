@@ -1,0 +1,453 @@
+@import form.parent.onboarding.OnboardingForm
+@import views.html.front.component.SimpleInput
+@import views.html.front.component.SimpleCheckbox
+@import play.data.Form
+@import services.GoogleService
+@import views.html.helper.CSRF
+@import models.children.enumeration.UsualChildcare
+@import form.parent.onboarding.OnboardingForm
+@import form.accountservice.RegistrationForm
+@import java.time.format.TextStyle
+
+@import java.time.DayOfWeek
+@import org.joda.time.DateTime
+@(onboardingForm: Form[OnboardingForm], registrationForm: Form[RegistrationForm])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="@messages.lang().code()">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="author" content="Elen"/>
+        <title>Elen</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/bootstrap.min.css")">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/fontawesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/all.min.css")">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/feathericon.min.css")">
+
+        <!-- JQuery UI -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.css")">
+
+        <!-- Jquery.Timepicker -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery.timepicker/jquery.timepicker.min.css")">
+
+        <!-- Select2 -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/select2/css/select2.min.css")">
+
+        <!-- Fullcalendar -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fullcalendar/fullcalendar.min.css")">
+
+        <!-- Powerange -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/powerange/powerange.min.css")">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/onboarding.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("color/color.css")">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/style.css")">
+
+    </head>
+    <body>
+        <div class="main-wrapper">
+            <header class="header">
+                <nav class="navbar navbar-expand-lg header-nav">
+                    <div class="navbar-header">
+                        <button id="previous-button" class="btn no-hover-color" data-home="http://www.helloelen.com"><i class="fe fe-arrow-left"></i> @messages("common.back")</button>
+                        <a href="@routes.HomeController.GET_Home()" class="navbar-brand logo no-hover-color blue">
+                            <div class="text-logo">@messages("company.project.name")</div>
+                        </a>
+                        <a class="nav-link header-login btn-cyan-o" href="@routes.StandardLoginController.GET_Login()">@messages("common.login")</a>
+                    </div>
+                </nav>
+            </header>
+            <div class="progress progress-xs">
+                <div id="step-progress-bar" class="progress-bar blue-h w-15" role="progressbar"></div>
+            </div>
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <div class="content">
+                        <form method="POST" id="onboarding-form" action="@routes.OnboardingController.POST_ParentStandardOnboarding()" data-facebook-action="@routes.OnboardingController.POST_ParentFacebookOnboarding()" data-google-action="@routes.OnboardingController.POST_ParentGoogleOnboarding()">
+                            @CSRF.formField
+                            <section id="step-location" class="section onboarding-step active" data-step="1" data-next-step="#step-care-type" data-progress="15">
+                                <div class="banner-wrapper">
+                                    <div>
+                                        <h2 class="px-3 pt-3 white">@Html(messages("views.front.parentOnboarding.location.title"))</h2>
+                                        @SimpleInput(onboardingForm, onboardingForm.field("searchAddress"), inputId = "search-address", parentDivClass="form-group auto-height p-3", placeholder = messages("views.front.parentOnboarding.address.title"), extraAttrs = Seq(("required", "required"), ("autocomplete", "off") , ("data-invalid", messages("views.front.parentOnbarding.address.invalid"))))
+                                        @SimpleInput(onboardingForm, registrationForm.field("address"), inputId = "address", inputExtraClass = "d-none")
+                                        @SimpleInput(onboardingForm, registrationForm.field("zipCode"), inputId = "zip-code", inputExtraClass = "d-none")
+                                        @SimpleInput(onboardingForm, registrationForm.field("city"), inputId = "city", inputExtraClass = "d-none")
+
+                                        <button id="find-sitter-button" class="btn btn-white mx-3 mb-3 btn-lg login-btn">@messages("views.front.parentOnboarding.location.findSitter")</button>
+                                    </div>
+                                    <div>
+                                        <img id="welcome-image" src="@routes.Assets.at("img/onboarding_welcome.jpeg")" alt="">
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-care-type" class="section onboarding-step" data-step="2" data-progress="30" data-next-step="#" data-previous-step="#step-location">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text">
+                                            <h2 class="mb-3">@messages("views.front.parentOnboarding.careType.speaker.hello")</h2>
+                                            <h2 class="mb-1">
+                                                <div id="speaker-careType-sitter" class="blue mb-1" data-messages="@messages("views.front.parentOnboarding.careType.speaker.sitter")"></div>
+                                                <div class="mb-1">@Html(messages("views.front.parentOnboarding.careType.speaker.description"))</div>
+                                                <div class="mb-1">@messages("views.front.parentOnboarding.careType.speaker.descriptionBis")</div>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div id="care-type-wrapper">
+                                        <div class="radio-input-wrapper">
+                                            <input required type="radio" id="choose-one-time-care" name="careType" value="ONE_TIME"/>
+                                            <label for="choose-one-time-care">
+                                                <span class="blue"><b>@messages("views.front.parentOnboarding.oneTimeCare.choice")</b></span>
+                                                <span>@messages("views.front.parentOnboarding.oneTimeCare.description")</span>
+                                                <span class="care-icon">🕔</span>
+                                            </label>
+                                        </div>
+                                        <div class="radio-input-wrapper">
+                                            <input required type="radio" id="choose-recurrent-care" name="careType" value="RECURRENT"/>
+                                            <label for="choose-recurrent-care">
+                                                <span class="blue"><b>@messages("views.front.parentOnboarding.recurrentCare.choice")</b></span>
+                                                <span>@messages("views.front.parentOnboarding.recurrentCare.description")</span>
+                                                <span class="care-icon">📆</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-one-time-care" class="section onboarding-step" data-step="3" data-next-step="#step-children" data-previous-step="#step-care-type" data-progress="45">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 class="mb-1">@messages("views.front.parentOnboarding.oneTimeCare.speaker.text")</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 pl-0-d">
+                                            @SimpleInput(onboardingForm, onboardingForm.field("oneTimeCare.date"), label = "views.front.parentOnboarding.form.oneTimeCare.date", inputId = "one-time-care-date", extraAttrs = Seq(("autocomplete", "off")))
+                                        </div>
+                                        <div class="col-6">
+                                            @SimpleInput(onboardingForm, onboardingForm.field("oneTimeCare.startHour"), label = "views.front.parentOnboarding.form.oneTimeCare.startHour", inputId = "one-time-care-start-hour")
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleInput(onboardingForm, onboardingForm.field("oneTimeCare.duration"), label = "views.front.parentOnboarding.form.oneTimeCare.duration", inputId = "one-time-care-duration")
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-recurrent-care" class="section onboarding-step" data-step="4" data-next-step="#step-children" data-previous-step="#step-care-type" data-progress="45">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 class="mb-1">@messages("views.front.parentOnboarding.recurrentCare.speaker.text")</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 pl-0-d">
+                                            <div id="calendar" data-title="@messages("views.front.parentOnboarding.recurrentCare.title")" data-button-add="@messages("common.add")" data-button-next="@messages("common.nextStep")">
+                                                <input id="calendar-validity" type="text" data-validity="@messages("views.front.parentOnboarding.recurrentCare.validity")">
+                                            </div>
+                                            <div id="events"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-children" class="section onboarding-step" data-step="5" data-next-step="#step-parent-criteria" data-previous-step="#step-care-type" data-progress="55">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 class="mb-1">@Html(messages("views.front.parentOnboarding.children.speaker.text", routes.Assets.at("img/logo_caf.png").url))</h2>
+                                        </div>
+                                    </div>
+                                    <div id="children">
+                                        <div class="children-age-wrapper">
+                                            <div class="children-age">
+                                                <div class="radio-input-wrapper">
+                                                    <input required type="radio" id="less-than-three[0]" name="children[0].category" value="UNDER_3_YEARS">
+                                                    <label for="less-than-three[0]">
+                                                        <div class="children-label-icon">🍼</div>
+                                                        <div class="children-label-lessThanThree">@messages("views.front.parentOnboarding.children.lessThanThree")</div>
+                                                        <select id="children[0].childcare" name="children[0].childcare" class="form-control usual-childcare" data-validity="@messages("views.front.parentOnboarding.children.usualChildCare.validity")">
+                                                            <option value="null">@messages("views.front.parentOnboarding.children.usualChildcare")</option>
+                                                            @for(usualChildcare: UsualChildcare <- UsualChildcare.values()) {
+                                                                <option value="@usualChildcare.name()">@messages(usualChildcare.getTranslationKey)</option>
+                                                            }
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                                <div class="radio-input-wrapper">
+                                                    <input required type="radio" id="less-than-six[0]" name="children[0].category" value="UNDER_6_YEARS">
+                                                    <label for="less-than-six[0]">
+                                                        <div class="children-label-icon">🤸</div>
+                                                        <div class="children-label-lessThanSix">@messages("views.front.parentOnboarding.children.lessThanSix")</div>
+                                                    </label>
+                                                </div>
+                                                <div class="radio-input-wrapper">
+                                                    <input required type="radio" id="more-than-six[0]" name="children[0].category" value="OVER_6_YEARS">
+                                                    <label for="more-than-six[0]">
+                                                        <div class="children-label-icon">📖</div>
+                                                        <div class="children-label-moreThanSix">@messages("views.front.parentOnboarding.children.moreThanSix")</div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="child-action">
+                                            <div class="add-child child-action-wrapper">
+                                                <div class="icon"><i class="fa fa-plus pink"></i></div>
+                                                <div class="text">@messages("views.front.parentOnboarding.children.addChild")</div>
+                                            </div>
+                                            <div class="remove-child child-action-wrapper">
+                                                <div class="icon"><i class="fa fa-minus blue"></i></div>
+                                                <div class="text">@messages("views.front.parentOnboarding.children.removeChild")</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-parent-criteria" class="section onboarding-step" data-step="6" data-previous-step="#step-children" data-next-step="#step-sign-up" data-income-url="@routes.OnboardingController.POST_GetIncomeLimitAJAX()" data-progress="70">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 class="mb-1">@Html(messages("views.front.parentOnboarding.familyCriteria.speaker.text"))</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleCheckbox(
+                                                onboardingForm,
+                                                onboardingForm.field("singleParent"),
+                                                label = "views.front.parentOnboarding.form.familyCriteria.singleParent",
+                                                inputId = "single-parent",
+                                                parentClass = "checkbox")
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleCheckbox(
+                                                onboardingForm,
+                                                onboardingForm.field("parentWorking"),
+                                                label = "views.front.parentOnboarding.form.familyCriteria.parentWorking",
+                                                inputId = "parent-working",
+                                                parentClass = "checkbox",
+                                                extraAttrs = Seq(("checked", "checked"))
+                                            )
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleCheckbox(
+                                                onboardingForm,
+                                                onboardingForm.field("disabledParent"),
+                                                label = "views.front.parentOnboarding.form.familyCriteria.disabledParent",
+                                                inputId = "disabled-parent",
+                                                parentClass = "checkbox")
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleCheckbox(
+                                                onboardingForm,
+                                                onboardingForm.field("disabledChildBenefit"),
+                                                label = "views.front.parentOnboarding.form.familyCriteria.disabledChildBenefit",
+                                                inputId = "disabled-child-benefit",
+                                                parentClass = "checkbox")
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12 pl-0-d">@Html(messages("views.front.parentOnboarding.familyCriteria.parentIncome", String.valueOf(DateTime.now.minusYears(2).getYear))) <span class="text-danger">*</span></div>
+                                    </div>
+                                    <div id="parent-income" class="py-1">
+                                        <div class="radio-input-wrapper">
+                                            <input required type="radio" id="income-below-min" name="income" value="LOW">
+                                            <label id="income-below-min-label" class="btn-blue-o m-0" for="income-below-min" data-value="@Html(messages("views.front.parentOnboarding.familyCriteria.incomeBelowMin"))"></label>
+                                        </div>
+                                        <div class="radio-input-wrapper">
+                                            <input required type="radio" id="income-below-max" name="income" value="MEDIUM">
+                                            <label id="income-below-max-label" class="btn-blue-o m-0" for="income-below-max"  data-value="@Html(messages("views.front.parentOnboarding.familyCriteria.incomeBelowMax"))"></label>
+                                        </div>
+                                        <div class="radio-input-wrapper">
+                                            <input required type="radio" id="income-above-max" name="income" value="HIGH">
+                                            <label id="income-above-max-label" class="btn-blue-o m-0" for="income-above-max" data-value="@Html(messages("views.front.parentOnboarding.familyCriteria.incomeAboveMax"))"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row py-3">
+                                        <div class="col-12 pl-0-d">
+                                            @SimpleInput(
+                                                onboardingForm,
+                                                onboardingForm.field("cafNumber"),
+                                                label = "views.front.parentOnboarding.form.familyCriteria.cafNumber",
+                                                inputId = "caf-number",
+                                                parentDivClass = "")
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="step-sign-up" class="section onboarding-step" data-previous-step="#step-parent-criteria" data-step="7" data-progress="85">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 id="sign-up-speaker-text" class="mb-1" data-message="@messages("views.front.parentOnboarding.signUp.speaker.text")" data-message-subsidize="@messages("views.front.parentOnboarding.signUp.speaker.text.subsidize")"></h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="step-sign-up-sizer" class="col-12">
+                                            <div id="social-button-wrapper">
+                                                <button id="facebook-sign-up-button" class="btn btn-facebook btn-rounded"><i class="fab fa-facebook-f mr-1"></i> @messages("views.front.login.withFacebook")</button>
+                                                <button id="google-sign-up-button" class="btn btn-light btn-rounded"><i class="fab fa-google mr-1"></i> @messages("views.front.login.withGoogle")</button>
+                                            </div>
+                                            <div class="login-or mb-0">
+                                                <span class="or-line"></span>
+                                                <span class="span-or">@messages("views.front.login.alternative")</span>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 pl-0-d">
+                                                    @SimpleInput(registrationForm, registrationForm.field("firstName"), inputId="first-name", label = "views.front.registration.form.firstName")
+                                                </div>
+                                                <div class="col-6">
+                                                    @SimpleInput(registrationForm, registrationForm.field("lastName"), inputId="last-name", label = "views.front.registration.form.lastName")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 pl-0-d">
+                                                    @SimpleInput(registrationForm, registrationForm.field("email"), inputId="email", label = "views.front.registration.form.email", fieldType = "email", extraAttrs = Seq(("data-already-used", messages("error.email.alreadyUsed"))))
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 pl-0-d">
+                                                    @SimpleInput(registrationForm, registrationForm.field("password"), inputId="password", label = "views.front.registration.form.password", fieldType = "password", extraAttrs = Seq(("data-do-not-match", messages("views.front.registration.form.password.doNotMatch")), ("data-available-url", routes.OnboardingController.POST_GetEmailAvailableAJAX().absoluteURL()), ("autocomplete", "new-password")))
+                                                </div>
+                                                <div class="col-6">
+                                                    @SimpleInput(registrationForm, registrationForm.field("passwordConfirmation"), inputId="password-confirmation", label = "views.front.registration.form.passwordConfirmation", fieldType = "password", extraAttrs = Seq(("autocomplete", "new-password")))
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 pl-0-d">
+                                                    @SimpleInput(registrationForm, registrationForm.field("phoneNumber"), inputId="phone-number", label = "views.front.registration.form.phoneNumber", extraAttrs = Seq(("pattern", "^(?:\\+33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$")))
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                        <div id="stepper-nav">
+                            <div class="banner-wrapper">
+                                <div id="nav-location">
+                                    <div id="next-step-button-wrapper">
+                                        <button id="next-button" class="btn btn-cyan btn-lg login-btn">@messages("common.nextStep")</button>
+                                    </div>
+                                    <div id="sign-up-wrapper" class="w-100">
+                                        <div class="d-flex justify-content-center">
+                                            <button id="sign-up-button" class="btn btn-cyan login-btn" type="submit" form="onboarding-form">@messages("views.front.parentOnboarding.signUpAndGetQuotation")</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <div class="modal fade" id="add-event-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@messages("views.front.parentOnboarding.recurrentCare.add.modal.header")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span>
+                        <label for="event-day" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.day")</label>
+                        <select id="event-day" name="eventDay" class="form-control pr-2">
+                            <option value="1">@messages("common.monday")</option>
+                            <option value="2">@messages("common.tuesday")</option>
+                            <option value="3">@messages("common.wednesday")</option>
+                            <option value="4">@messages("common.thursday")</option>
+                            <option value="5">@messages("common.friday")</option>
+                            <option value="6">@messages("common.saturday")</option>
+                            <option value="7">@messages("common.sunday")</option>
+                        </select>
+                    </span>
+                    <span class="pt-2">
+                        <label for="event-start-hour" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.hour.from")</label>
+                        <input id="event-start-hour" name="event-start-hour" class="form-control" type="text">
+                        <label for="event-end-hour" class="pr-2">@messages("views.front.parentOnboarding.recurrentCare.add.modal.body.hour.to")</label>
+                        <input id="event-end-hour" name="event-end-hour" class="form-control" type="text">
+                        <div id="error-information" class="text-danger pt-3">@messages("views.front.parentOnboarding.recurrentCare.add.modal.unavailable")</div>
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-event-button" type="button" data-dismiss="modal" class="btn btn-cyan">@messages("common.add")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/i18n/fr.js")"></script>
+
+    <!-- Jquery.Timepicker -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery.timepicker/jquery.timepicker.min.js")"></script>
+
+    <!-- Select2 -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/select2/js/select2.full.min.js")"></script>
+
+    <!-- Moment -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/moment/moment.min.js")"></script>
+
+    <!-- Fullcalendar -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/fullcalendar/fullcalendar.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/fullcalendar/locale-fr.js")"></script>
+
+    <!-- Powerange -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/powerange/powerange.min.js")"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/popper.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/bootstrap.min.js")"></script>
+
+    <!-- Slick JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/slick.js")"></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/script.js")"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@GoogleService.apiKey&libraries=places"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/onboarding.js")"></script>
+</html>

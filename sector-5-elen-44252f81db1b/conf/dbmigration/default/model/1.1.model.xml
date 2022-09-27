@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- THIS IS A GENERATED FILE - DO NOT MODIFY -->
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <addColumn tableName="sitter_attribute">
+            <column name="past_experience" type="TEXT"/>
+            <column name="social_security_number" type="varchar"/>
+        </addColumn>
+    </changeSet>
+</migration>

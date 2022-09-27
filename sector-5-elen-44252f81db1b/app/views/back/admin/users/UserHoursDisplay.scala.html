@@ -1,0 +1,14 @@
+@import models.account.AccountModel
+@(account: AccountModel, hours: java.lang.Double, hasUnder6yoChild: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@colorClass = @{
+    if (hours <= 0 || hours >= 16 || !hasUnder6yoChild) {
+        "bg-success"
+    } else {
+        "bg-danger"
+    }
+}
+
+<div>
+    <span class="badge badge-pill @colorClass inv-badge">@String.format("%.1fh", hours)</span> <br/>
+</div>

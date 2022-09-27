@@ -1,0 +1,11 @@
+@(sideBarContent: Html)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!-- Sidebar -->
+<div class="sidebar blue-h" id="sidebar">
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu">
+            @sideBarContent
+        </div>
+    </div>
+</div>
+<!-- /Sidebar -->

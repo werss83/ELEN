@@ -1,0 +1,11 @@
+@(
+        label: String = null,
+        labelClass: String = null,
+)(content: Html)(implicit messages: play.i18n.Messages)
+
+<div class="form-group checkbox-group">
+    <label class="@labelClass">@messages(label)</label>
+    <div class="ml-4">
+        @content
+    </div>
+</div>

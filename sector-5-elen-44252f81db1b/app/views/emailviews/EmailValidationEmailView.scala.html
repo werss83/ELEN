@@ -1,0 +1,17 @@
+@import models.account.AccountModel
+@(validationUrl: String)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@emailviews.BaseEmailView(null, "views.email.validation.title") {
+
+    <p>@messages("views.email.validation.message")</p>
+
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="@validationUrl">@messages("views.email.validation.button")</a>
+    </div>
+
+    <p>
+        @messages("views.email.validation.alternate") :
+        <br/>
+        @validationUrl
+    </p>
+}

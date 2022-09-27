@@ -1,0 +1,20 @@
+@import models.account.AccountModel
+@(account: AccountModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@deleteModalId = @{ String.format("delete_modal_%s", account.getUid.toString) }
+
+<div class="text-right">
+    <div class="actions">
+        <a class="btn btn-sm bg-primary-light" href="@controllers.admin.routes.UserManageController.GET_User(account)">
+            <i class="fe fe-edit"></i> @messages("views.back.admin.users.actionsDisplay.edit")
+        </a>
+        <a class="btn btn-sm bg-warning-light" href="@controllers.admin.routes.UserManageController.GET_Impersonate(account)">
+            <i class="fe fe-user"></i> @messages("views.back.admin.users.actionsDisplay.impersonate")
+        </a>
+        <a class="btn btn-sm bg-danger-light" data-toggle="modal" href="#@deleteModalId">
+            <i class="fe fe-trash"></i> @messages("views.back.admin.users.actionsDisplay.delete")
+        </a>
+    </div>
+</div>
+
+@views.html.back.admin.users.ActionDeleteModal(account, deleteModalId)

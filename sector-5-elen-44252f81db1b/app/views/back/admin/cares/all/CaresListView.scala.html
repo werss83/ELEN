@@ -1,0 +1,152 @@
+@import entities.dto.admin.OneTimeCareDTO
+@import models.care.enumeration.EffectiveCareStatus
+@(data: OneTimeCareDTO)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.admin.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.admin.common.sideBar.allCare", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard"),
+    (null, "views.back.admin.common.sideBar.allCare")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label for="status-search">@messages("views.back.admin.cares.onetime.caresList.status")</label>
+                                <select class="select" id="status-search">
+                                    <option value="">@messages("views.back.admin.cares.onetime.caresList.status.all")</option>
+                                    @for(status <- EffectiveCareStatus.values()) {
+                                        <option value="@status.name">@messages(status.getTranslationKey)</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label for="date-search">@messages("views.back.admin.cares.onetime.caresList.date")</label>
+                                <input id="date-search" type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label for="parent-search">@messages("views.back.admin.cares.onetime.caresList.parent")</label>
+                                <input id="parent-search" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div class="form-group">
+                                <label for="sitter-search">@messages("views.back.admin.cares.onetime.caresList.sitter")</label>
+                                <input id="sitter-search" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table id="cares-list" class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.id")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.status")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.startDate")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.endDate")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.duration")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.city")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.parent")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.sitter")</th>
+                                        <th>@messages("views.back.admin.cares.onetime.caresList.column.actions")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(data.hasBoundEditForm) {
+        @views.html.back.admin.cares.onetime.ActionEditModal(data.getBoundEditForm, data.getSitterData, data.getEffectiveCare, "edit_error_modal", controllers.admin.routes.AllCareController.POST_UpdateCare(data.getEffectiveCare));
+    }
+}
+
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.css")">
+}
+
+@js = {
+        <!-- Datatables JS -->
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/plugins/datatables/datatables.min.js")"></script>
+    <script src="@routes.Assets.at("admin/assets/js/datatables-custom.js")"></script>
+    <script type="application/javascript">
+            $(document).ready(function () {
+
+                table = $('#cares-list').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@controllers.admin.routes.AllCareController.POST_CaresAjaxList()",
+                        data: function (d) {
+                            return JSON.stringify({parameters: d});
+                        }
+                    },
+                    searching: true,
+                    dom: "ltipr",
+                    columns: [{
+                        name: "id",
+                        orderable: true,
+                        searchable: false
+                    }, {
+                        name: "status",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "startDate",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "endDate",
+                        orderable: true,
+                        searchable: true
+                    }, {
+                        name: "duration",
+                        orderable: false,
+                        searchable: false
+                    }, {
+                        name: "city",
+                        orderable: true,
+                        searchable: false
+                    }, {
+                        name: "parent",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "sitter",
+                        orderable: false,
+                        searchable: true
+                    }, {
+                        name: "actions",
+                        orderable: false,
+                        searchable: true
+                    }],
+                    order: [[0, "desc"]],
+                    columnDefs: []
+                });
+                $("#status-search").DataTablesSearch(table, "status:name")
+                $("#date-search").DataTablesSearch(table, "startDate:name")
+                $("#parent-search").DataTablesSearch(table, "parent:name")
+                $("#sitter-search").DataTablesSearch(table, "sitter:name")
+
+                let status = $.urlParam("status");
+                if (status !== undefined) {
+                    $("#status-search").val(status).trigger('change');
+                }
+            });
+            @if(data.hasBoundEditForm) {
+                $('#edit_error_modal').modal("show");
+            }
+    </script>
+}

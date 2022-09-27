@@ -1,0 +1,22 @@
+@import play.data.Form
+@import models.care.BookedCareModel
+@import form.admin.cares.EditScheduledCareForm
+@(
+        editForm: Form[EditScheduledCareForm],
+        bookedCare: BookedCareModel
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@editModalId = @{ String.format("edit_modal_%s", bookedCare.getUid.toString) }
+
+<div class="text-right">
+    <div class="actions">
+        <a class="btn btn-sm bg-info-light" href="@controllers.admin.routes.ScheduledCareController.GET_CareDetail(bookedCare)">
+            <i class="fe fe-eye"></i> @messages("views.back.admin.cares.scheduled.actionDisplay.view")
+        </a>
+        <a class="btn btn-sm bg-primary-light" data-toggle="modal" href="#@editModalId">
+            <i class="fe fe-edit"></i> @messages("views.back.admin.cares.scheduled.actionDisplay.edit")
+        </a>
+    </div>
+</div>
+
+@views.html.back.admin.cares.scheduled.ActionEditModal(editForm, bookedCare, editModalId)

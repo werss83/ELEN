@@ -1,0 +1,35 @@
+@import models.care.BookedCareModel
+@import models.care.enumeration.BookedCareType
+@(bookedCare: BookedCareModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@title = @{
+    if (bookedCare.getType == BookedCareType.ONE_TIME) {
+        messages("views.email.newCare.title.oneTime")
+    } else {
+        messages("views.email.newCare.title.recurrent")
+    }
+}
+
+@url = @{
+    if (bookedCare.getType == BookedCareType.ONE_TIME) {
+        controllers.admin.routes.OneTimeCareController.GET_Cares().absoluteURL() + "?status=PLANNED"
+    } else {
+        controllers.admin.routes.ScheduledCareController.GET_CareDetail(bookedCare).absoluteURL()
+    }
+}
+
+@emailviews.BaseEmailView(null, title) {
+    <p>
+        @Html(messages("views.email.newCare.message"))
+    </p>
+
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="@url">@messages("views.email.newCare.button")</a>
+    </div>
+
+    <p>
+        @messages("views.email.newCare.alternate") :
+        <br/>
+        @url
+    </p>
+}

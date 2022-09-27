@@ -1,0 +1,69 @@
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import form.parent.CafInformationForm
+@import views.html.back.component.CheckboxGroup
+@import views.html.back.component.SimpleCheckbox
+@import views.html.back.component.GroupInput
+@import play.data.Form
+@import views.html.back.component.SimpleSelect
+@import entities.dto.parent.CafDTO
+@import org.joda.time.DateTime
+@(data: CafDTO, form: Form[CafInformationForm])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@back.parent.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.parent.caf.title", nav = Array(
+    (controllers.parent.routes.ParentController.GET_ParentDashboard(), "views.back.parent.common.sideBar.dashboard"),
+    (null, "views.back.parent.common.sideBar.cafInfo")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <form method="POST" action="#">
+                <div class="card">
+                    <div id="caf-card-header" class="card-header">
+                        <h4>@messages("views.back.parent.caf.form.title")</h4>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-cyan">@messages("views.back.parent.caf.submit")</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                            @CSRF.formField
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    @defining(messages("views.back.parent.caf.form.cafNumber.info")) { info =>
+                                        @SimpleInput(form, form.field("cafNumber"), label = "views.back.parent.caf.form.cafNumber", after = Html(info))
+                                    }
+                                </div>
+                                <div class="col-lg-6">
+                                    @SimpleSelect(form, form.field("income"), data.getIncomeGroup, label = messages("views.back.parent.caf.form.groupIncome", DateTime.now().minusYears(2).toString("YYYY")))
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    @CheckboxGroup("views.back.parent.caf.form.optionGroup") {
+                                        @SimpleCheckbox(form, form.field("singleParent"), label = "views.back.parent.caf.form.singleParent")
+                                        @SimpleCheckbox(form, form.field("sharedCare"), label = "views.back.parent.caf.form.sharedCare")
+                                        @SimpleCheckbox(form, form.field("workingParent"), label = "views.back.parent.caf.form.workingParent")
+                                        @SimpleCheckbox(form, form.field("disabledParent"), label = "views.back.parent.caf.form.disabledParent")
+                                        @SimpleCheckbox(form, form.field("disabledChild"), label = "views.back.parent.caf.form.disabledChild")
+                                    }
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@css = {
+    <style>
+        #caf-card-header {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+}
+
+@js = {
+}

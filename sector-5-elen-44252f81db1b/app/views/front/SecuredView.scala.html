@@ -1,0 +1,22 @@
+@import org.pac4j.core.profile.CommonProfile
+@(profiles: java.util.List[CommonProfile])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@front.common.BaseView() {
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h5>This page is secured !</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p>
+                        @profiles
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

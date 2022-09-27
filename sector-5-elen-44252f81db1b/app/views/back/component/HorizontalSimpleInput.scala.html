@@ -1,0 +1,40 @@
+@import play.data.Form
+@import twirl.form.FieldAttrs
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        placeholder: String = "",
+        label: String = null,
+        labelClass: String = "",
+        labelErrorClass: String = "",
+        fieldType: String = "text",
+        inputExtraClass: String = "",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@generateInput(iId: String, iClass: String, extraHtml: Html, fieldAttrs: FieldAttrs) = {
+    <div class="col-lg-9">
+        <input id="@iId" class="@iClass" type="@fieldType" name="@field.name" placeholder="@messages(placeholder)" value="@{if(retrieveValue){field.value.getOrElse("")}}" @extraHtml>
+    </div>
+}
+
+@back.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = "form-control",
+    inputRender = generateInput,
+    label = label,
+    labelClass = "col-lg-3 col-form-label " + labelClass,
+    labelErrorClass = labelErrorClass,
+    inputExtraClass = inputExtraClass,
+    parentDivClass = "form-group row",
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after,
+    devMode = devMode)

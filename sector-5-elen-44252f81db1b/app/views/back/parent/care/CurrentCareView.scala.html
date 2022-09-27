@@ -1,0 +1,81 @@
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import form.parent.CafInformationForm
+@import views.html.back.component.CheckboxGroup
+@import views.html.back.component.SimpleCheckbox
+@import views.html.back.component.GroupInput
+@import models.care.EffectiveCareModel
+@import org.joda.time.DateTime
+@import org.joda.time.format.PeriodFormatterBuilder
+
+@(care: EffectiveCareModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@periodFormatter = @{
+    new PeriodFormatterBuilder()
+            .printZeroAlways()
+            .minimumPrintedDigits(2)
+            .appendHours()
+            .appendSeparator("h")
+            .appendMinutes()
+            .toFormatter
+}
+
+@back.parent.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.parent.currentCare.title", nav = Array(
+    (controllers.parent.routes.ParentController.GET_ParentDashboard(), "views.back.parent.common.sideBar.dashboard"),
+    (null, "views.back.parent.common.sideBar.currentCare")
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                @if(care == null) {
+                    <div class="card-header">
+                        <h4>@messages("views.back.parent.currentCare.noCare.title")</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>@messages("views.back.parent.currentCare.noCare.message")
+                            <a href="@controllers.parent.routes.CareController.GET_ScheduleNewCare()">
+                                @messages("views.back.parent.currentCare.noCare.link")
+                            </a>
+                        </p>
+                    </div>
+                } else {
+                    @if(care.getStartDate.isBefore(DateTime.now())) {
+                        <div class="card-header">
+                            <h4>@messages("views.back.parent.currentCare.now.title")</h4>
+                        </div>
+                    } else {
+                        <div class="card-header">
+                            <h4>@messages("views.back.parent.currentCare.next.title")</h4>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <div>
+                            <i class="fe fe-calendar"></i>
+                            <span class="sidebar-link">@messages("views.back.parent.currentCare.date") :</span>
+                            <span>@care.getStartDate.toString("dd-MM-YYYY")</span>
+                        </div>
+                        <div>
+                            <i class="fe fe-clock"></i>
+                            <span class="sidebar-link">@messages("views.back.parent.currentCare.time") :</span>
+                            <span>@care.getStartDate.toString("HH'h'mm")</span>
+                        </div>
+                        <div>
+                            <i class="fe fe-watch"></i>
+                            <span class="sidebar-link">@messages("views.back.parent.currentCare.duration") :</span>
+                            <span>@periodFormatter.print(care.getDuration.toPeriod())</span>
+                        </div>
+                    </div>
+                }
+                <div class="card-footer text-muted">
+                    <span>@Html(messages("views.back.parent.currentCare.changeContact"))</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+}
+
+@js = {
+}

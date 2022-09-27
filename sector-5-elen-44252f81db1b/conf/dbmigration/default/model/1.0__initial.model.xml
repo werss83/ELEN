@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- THIS IS A GENERATED FILE - DO NOT MODIFY -->
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="account" pkName="pk_account">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_account_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="first_name" type="varchar(128)" notnull="true"/>
+            <column name="last_name" type="varchar(128)" notnull="true"/>
+            <column name="email" type="varchar(512)" notnull="true" unique="uq_account_email"/>
+            <column name="address" type="varchar(512)" notnull="true"/>
+            <column name="city" type="varchar(256)" notnull="true"/>
+            <column name="zip_code" type="varchar(16)" notnull="true"/>
+            <column name="additional_address" type="varchar(256)"/>
+            <column name="coordinate" type="point" notnull="true"/>
+            <column name="phone_number" type="varchar(16)" notnull="true"/>
+            <column name="profile_picture" type="varchar(1024)"/>
+            <column name="password" type="varchar(256)"/>
+            <column name="google_id" type="varchar(32)" unique="uq_account_google_id"/>
+            <column name="facebook_id" type="varchar(32)" unique="uq_account_facebook_id"/>
+            <column name="twitter_id" type="varchar(32)" unique="uq_account_twitter_id"/>
+            <column name="last_login" type="timestamp"/>
+            <column name="active" type="boolean" notnull="true"/>
+            <column name="email_verified" type="boolean" notnull="true"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="booked_care" pkName="pk_booked_care">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_booked_care_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="booked_care_type" type="varchar(9)" notnull="true" checkConstraint="check ( booked_care_type in ('ONE_TIME','RECURRENT'))" checkConstraintName="ck_booked_care_booked_care_type"/>
+            <column name="start_date" type="timestamp" notnull="true"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="duration" type="bigint" notnull="true"/>
+            <column name="parent_id" type="bigint" notnull="true" references="parent.id" foreignKeyName="fk_booked_care_parent_id" foreignKeyIndex="ix_booked_care_parent_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="booked_care_children" pkName="pk_booked_care_children">
+            <column name="booked_care_id" type="bigint" notnull="true" primaryKey="true"/>
+            <column name="children_id" type="bigint" notnull="true" primaryKey="true"/>
+            <foreignKey name="fk_booked_care_children_booked_care" columnNames="booked_care_id" refColumnNames="id" refTableName="booked_care" indexName="ix_booked_care_children_booked_care"/>
+            <foreignKey name="fk_booked_care_children_children" columnNames="children_id" refColumnNames="id" refTableName="children" indexName="ix_booked_care_children_children"/>
+        </createTable>
+        <createTable name="caf_option" pkName="pk_caf_option">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_caf_option_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="opt_key" type="varchar(32)" notnull="true"/>
+            <column name="opt_value" type="TEXT"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+            <uniqueConstraint name="uq_caf_option_opt_key" columnNames="opt_key" oneToOne="false" nullableColumns=""/>
+        </createTable>
+        <createTable name="care_criteria" pkName="pk_care_criteria">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_care_criteria_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="gender" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="have_car" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="speaks_english" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="experience_with_children" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="smoke" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="childhood_training" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="booked_care_id" type="bigint" notnull="true" uniqueOneToOne="uq_care_criteria_booked_care_id" references="booked_care.id" foreignKeyName="fk_care_criteria_booked_care_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="children" pkName="pk_children">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_children_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="first_name" type="varchar(64)"/>
+            <column name="category" type="varchar(24)" notnull="true" checkConstraint="check ( category in ('UNDER_3_YEARS','UNDER_6_YEARS','OVER_6_YEARS','BIRTHDAY'))" checkConstraintName="ck_children_category"/>
+            <column name="birth_date" type="date"/>
+            <column name="parent_id" type="bigint" notnull="true" references="parent.id" foreignKeyName="fk_children_parent_id" foreignKeyIndex="ix_children_parent_id"/>
+            <column name="usual_childcare" type="varchar(24)" checkConstraint="check ( usual_childcare in ('KINDERGARTEN','PUBLIC_NURSERY','MATERNAL_ASSISTANCE','PRIVATE_NURSERY','OTHER'))" checkConstraintName="ck_children_usual_childcare"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="children_has_booked_care" pkName="pk_children_has_booked_care">
+            <column name="children_id" type="bigint" notnull="true" primaryKey="true"/>
+            <column name="booked_care_id" type="bigint" notnull="true" primaryKey="true"/>
+            <foreignKey name="fk_children_has_booked_care_children" columnNames="children_id" refColumnNames="id" refTableName="children" indexName="ix_children_has_booked_care_children"/>
+            <foreignKey name="fk_children_has_booked_care_booked_care" columnNames="booked_care_id" refColumnNames="id" refTableName="booked_care" indexName="ix_children_has_booked_care_booked_care"/>
+        </createTable>
+        <createTable name="effective_care" pkName="pk_effective_care">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_effective_care_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="status" type="varchar(12)" notnull="true" checkConstraint="check ( status in ('PLANNED','ASSIGNED','PERFORMED','CANCELLED','UNSUCCESSFUL'))" checkConstraintName="ck_effective_care_status"/>
+            <column name="start_date" type="timestamp" notnull="true"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="booked_care_id" type="bigint" notnull="true" references="booked_care.id" foreignKeyName="fk_effective_care_booked_care_id" foreignKeyIndex="ix_effective_care_booked_care_id"/>
+            <column name="effective_unavailability_id" type="bigint" uniqueOneToOne="uq_effective_care_effective_unavailability_id" references="effective_unavailability.id" foreignKeyName="fk_effective_care_effective_unavailability_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="effective_unavailability" pkName="pk_effective_unavailability">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_effective_unavailability_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="start_date" type="timestamp" notnull="true"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="planned_unavailability_id" type="bigint" notnull="true" references="planned_unavailability.id" foreignKeyName="fk_effective_unavailability_planned_unavailability_id" foreignKeyIndex="ix_effective_unavailability_planned_unavailability_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="parent_criteria" pkName="pk_parent_criteria">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_parent_criteria_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="gender" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="have_car" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="speaks_english" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="experience_with_children" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="smoke" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="childhood_training" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="parent_id" type="bigint" notnull="true" uniqueOneToOne="uq_parent_criteria_parent_id" references="parent.id" foreignKeyName="fk_parent_criteria_parent_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="parent" pkName="pk_parent">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_parent_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="account_id" type="bigint" notnull="true" uniqueOneToOne="uq_parent_account_id" references="account.id" foreignKeyName="fk_parent_account_id"/>
+            <column name="sponsor_code" type="varchar(16)" notnull="true" unique="uq_parent_sponsor_code"/>
+            <column name="sponsor_id" type="bigint" references="parent.id" foreignKeyName="fk_parent_sponsor_id" foreignKeyIndex="ix_parent_sponsor_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="parent_option" pkName="pk_parent_option">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_parent_option_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="opt_key" type="varchar(32)" notnull="true"/>
+            <column name="opt_value" type="TEXT"/>
+            <column name="parent_id" type="bigint" notnull="true" references="parent.id" foreignKeyName="fk_parent_option_parent_id" foreignKeyIndex="ix_parent_option_parent_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+            <uniqueConstraint name="uq_parent_option_parent_id_opt_key" columnNames="parent_id,opt_key" oneToOne="false" nullableColumns=""/>
+        </createTable>
+        <createTable name="planned_unavailability" pkName="pk_planned_unavailability">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_planned_unavailability_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="sitter_unavailability_type" type="varchar(9)" notnull="true" checkConstraint="check ( sitter_unavailability_type in ('ONE_TIME','RECURRENT'))" checkConstraintName="ck_planned_unavailability_sitter_unavailability_type"/>
+            <column name="start_date" type="timestamp" notnull="true"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="duration" type="bigint" notnull="true"/>
+            <column name="sitter_id" type="bigint" notnull="true" references="sitter.id" foreignKeyName="fk_planned_unavailability_sitter_id" foreignKeyIndex="ix_planned_unavailability_sitter_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="role" pkName="pk_role">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_role_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="role" type="varchar(32)" notnull="true" checkConstraint="check ( role in ('NONE','ROLE_PARENT','ROLE_SITTER','ROLE_ADMIN'))" checkConstraintName="ck_role_role"/>
+            <column name="account_id" type="bigint" notnull="true" references="account.id" foreignKeyName="fk_role_account_id" foreignKeyIndex="ix_role_account_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="sitter_attribute" pkName="pk_sitter_attribute">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_sitter_attribute_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="gender" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="have_car" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="speaks_english" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="experience_with_children" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="smoke" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="childhood_training" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="guard_type" type="varchar[]" notnull="true"/>
+            <column name="experiences" type="varchar[]" notnull="true"/>
+            <column name="experience_types" type="varchar[]" notnull="true"/>
+            <column name="situation" type="varchar(32)" notnull="true" checkConstraint="check ( situation in ('STUDENT','ACTIVE_WITH_CHILDREN','ACTIVE_WITHOUT_CHILDREN','SENIOR'))" checkConstraintName="ck_sitter_attribute_situation"/>
+            <column name="situation_detail" type="TEXT"/>
+            <column name="certifications" type="varchar[]" notnull="true"/>
+            <column name="extra_certification" type="TEXT"/>
+            <column name="spoken_languages" type="varchar[]" notnull="true"/>
+            <column name="homework_capabilities" type="varchar[]" notnull="true"/>
+            <column name="car_situation" type="varchar(24)" notnull="true" checkConstraint="check ( car_situation in ('YES','NO_BUT_PLANNED','NO'))" checkConstraintName="ck_sitter_attribute_car_situation"/>
+            <column name="public_transports" type="varchar[]" notnull="true"/>
+            <column name="availabilities" type="varchar[]" notnull="true"/>
+            <column name="commendation" type="TEXT"/>
+            <column name="information" type="TEXT"/>
+            <column name="sitter_id" type="bigint" notnull="true" uniqueOneToOne="uq_sitter_attribute_sitter_id" references="sitter.id" foreignKeyName="fk_sitter_attribute_sitter_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="sitter" pkName="pk_sitter">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_sitter_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="account_id" type="bigint" notnull="true" uniqueOneToOne="uq_sitter_account_id" references="account.id" foreignKeyName="fk_sitter_account_id"/>
+            <column name="birthday" type="date"/>
+            <column name="picture" type="BYTEA"/>
+            <column name="picture_mime_type" type="varchar(32)"/>
+            <column name="picture_etag" type="varchar(32)"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+        </createTable>
+        <createTable name="sitter_option" pkName="pk_sitter_option">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="uid" type="uuid" notnull="true" unique="uq_sitter_option_uid"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="last_update" type="timestamp" notnull="true"/>
+            <column name="opt_key" type="varchar(32)" notnull="true"/>
+            <column name="opt_value" type="TEXT"/>
+            <column name="sitter_id" type="bigint" notnull="true" references="sitter.id" foreignKeyName="fk_sitter_option_sitter_id" foreignKeyIndex="ix_sitter_option_sitter_id"/>
+            <column name="deleted" type="BOOLEAN DEFAULT FALSE" notnull="true"/>
+            <uniqueConstraint name="uq_sitter_option_sitter_id_opt_key" columnNames="sitter_id,opt_key" oneToOne="false" nullableColumns=""/>
+        </createTable>
+    </changeSet>
+</migration>

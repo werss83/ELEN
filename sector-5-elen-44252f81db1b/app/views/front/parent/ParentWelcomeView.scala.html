@@ -1,0 +1,75 @@
+@()(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="@messages.lang().code()">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="author" content="Elen"/>
+        <title>Elen</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/bootstrap.min.css")">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/fontawesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/all.min.css")">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/feathericon.min.css")">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("color/color.css")">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/style.css")">
+
+    </head>
+    <body style="background-color: white">
+        <div class="main-wrapper">
+            <header class="header">
+                <nav class="navbar navbar-expand-lg header-nav">
+                    <div class="navbar-header d-flex w-100 align-items-center justify-content-center">
+                        <a href="@routes.HomeController.GET_Home()" class="navbar-brand blue logo">
+                            <div class="text-logo">@messages("company.project.name")</div>
+                        </a>
+                    </div>
+                    <div class="main-menu-wrapper">
+                        <div class="menu-header">
+                        </div>
+                        <ul class="main-nav">
+                        </ul>
+                    </div>
+                    <ul class="nav header-navbar-rht">
+                    </ul>
+                </nav>
+            </header>
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <div class="content">
+                        <div class="banner-wrapper d-flex flex-column align-items-center justify-content-center text-center">
+                            <h1 class="blue">@messages("views.parent.welcome.title")</h1>
+                            <h2 class="blue">@messages("views.parent.welcome.text")</h2>
+                            <img class="w-100 h-100" style="max-width: 676px" src="@routes.Assets.at("img/welcome.png")" alt="">
+                            <div>@Html(messages("views.parent.welcome.contact"))</div>
+                            <a class="btn btn-cyan mt-3" href="@controllers.parent.routes.ParentController.GET_ParentDashboard()">@messages("views.parent.welcome.accessDashboard")</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/jquery.min.js")"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/popper.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/bootstrap.min.js")"></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/script.js")"></script>
+</html>

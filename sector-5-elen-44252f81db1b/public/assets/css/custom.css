@@ -1,0 +1,62 @@
+/* Auto height for form-focus div. */
+.form-group.auto-height {
+    height: auto;
+}
+
+/* Adjust fa-eye for password input */
+.toggle-password .fa-eye {
+    padding: 0 1px;
+}
+
+/* Size of the text for the error span. */
+.form-error-cause {
+    font-size: 0.8rem;
+}
+
+/* When using a list as an error output on a form. */
+.form-error-list {
+    line-height: 0.82rem;
+    margin-top: 8px;
+}
+
+.form-error {
+    border-color: #ff0100 !important;
+}
+
+/* Adapt logo width with the content size */
+.logo {
+    width: unset !important;
+    margin-bottom: 12px;
+}
+
+.text-logo {
+    font-weight: 700;
+    font-size: 32px;
+}
+
+/* Reduce vertical padding */
+.footer .footer-bottom .copyright {
+    padding: 15px 0 !important;
+}
+
+.section {
+    padding: 80px 0;
+}
+
+/* Display logo in center on mobile */
+@media only screen and (max-width: 991.98px) {
+    .navbar-header {
+        justify-content: center;
+    }
+}
+
+/* Display footer in center on mobile */
+@media only screen and (max-width: 767.98px) {
+    .copyright-text {
+        text-align: center;
+    }
+}
+
+.copyright-text, .social-icon {
+    padding: 5px 0;
+}

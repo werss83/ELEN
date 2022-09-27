@@ -1,0 +1,115 @@
+@import form.admin.RoleForm
+@import form.parent.ParentCriteriaForm
+@import form.profile.ProfileForm
+@import form.sitter.SitterAttributesForm
+@import models.account.AccountModel
+@import play.data.Form
+@import security.Role
+@import services.GoogleService
+@import views.html.back.component.MultipleSelect
+@import views.html.back.parent.form.ParentCriterias
+@import views.html.back.sitter.form.SitterAttributes
+@import views.html.back.userprofile.UserProfileForm
+@import views.html.helper.CSRF
+@(
+        profileForm: Form[ProfileForm],
+        roleForm: Form[RoleForm],
+        parentForm: Form[ParentCriteriaForm],
+        sitterForm: Form[SitterAttributesForm],
+        account: AccountModel
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@sitter = @{account.getSitter}
+
+@sitterAttrHeader = {
+    <div class="text-left mb-2">
+        <h4>@messages("views.back.admin.users.newUser.sitterAttributes")</h4>
+    </div>
+}
+
+@parentAttrHeader = {
+    <div class="text-left mb-2">
+        <h4>@messages("views.back.admin.users.newUser.parentCriterias")</h4>
+    </div>
+}
+
+@back.admin.common.BaseView(pageStyle = css, pageScript = js, title = "views.back.admin.users.editUser.title", nav = Array(
+    (controllers.admin.routes.AdminController.GET_AdminDashboard(), "views.back.admin.common.sideBar.dashboard"),
+    (controllers.admin.routes.UserManageController.GET_Users(), "views.back.admin.common.sideBar.users"),
+    (null, account.getFullName)
+)) {
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>@messages("views.back.admin.users.editUser.profile.title")</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="@controllers.admin.routes.UserManageController.POST_UserProfile(account)">
+                        @CSRF.formField
+                        @UserProfileForm(profileForm)
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">@messages("views.back.admin.users.editUser.role.form.submit")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>@messages("views.back.admin.users.editUser.role.title")</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="@controllers.admin.routes.UserManageController.POST_UserRoles(account)" enctype="multipart/form-data">
+                        @CSRF.formField
+                        <div class="row">
+                            <div class="col-12">
+                                @MultipleSelect(roleForm, roleForm.field("roles"), Role.selectData, label = "views.back.admin.users.editUser.role.form.select", inputId = "roles")
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @SitterAttributes(sitterForm, sitter, "col-lg-12 mt-4", "sitter-info", "style=\"display:none;\"", preHtml = sitterAttrHeader)
+                            @ParentCriterias(parentForm, "col-lg-6 mt-4", "parent-info", "style=\"display:none\"", preHtml = parentAttrHeader)
+                        </div>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">@messages("views.back.admin.users.editUser.role.form.submit")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+}
+
+@js = {
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@GoogleService.apiKey&libraries=places"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/address-search-form.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            let roles = $("#roles");
+            let parent = $("#parent-info");
+            let sitter = $("#sitter-info");
+
+            roles.on("change", function() {
+                if ($('#roles option[value="ROLE_PARENT"]').prop('selected')) {
+                    parent.show();
+                } else {
+                    parent.hide();
+                }
+                if ($('#roles option[value="ROLE_SITTER"]').prop('selected')) {
+                    sitter.show();
+                } else {
+                    sitter.hide();
+                }
+            }).trigger("change");
+        });
+    </script>
+}

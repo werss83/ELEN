@@ -1,0 +1,154 @@
+@import views.html.front.component.SimpleInput
+@import play.data.Form
+@import services.GoogleService
+@import views.html.helper.CSRF
+@import form.accountservice.RegistrationForm
+
+@(registrationForm: Form[RegistrationForm], action: String)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="@messages.lang().code()">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="author" content="Elen"/>
+        <title>Elen</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/bootstrap.min.css")">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/fontawesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/all.min.css")">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/feathericon.min.css")">
+
+        <!-- JQuery UI -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.css")">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/onboarding.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("color/color.css")">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/style.css")">
+
+    </head>
+    <body>
+        <div class="main-wrapper">
+            <header class="header">
+                <nav class="navbar navbar-expand-lg header-nav">
+                    <div class="navbar-header">
+                        <a href="@routes.HomeController.GET_Home()" class="navbar-brand logo no-hover-color blue">
+                            <div class="text-logo">@messages("company.project.name")</div>
+                        </a>
+                    </div>
+                    <div class="main-menu-wrapper">
+                        <div class="menu-header">
+                        </div>
+                        <ul class="main-nav">
+                        </ul>
+                    </div>
+                    <ul class="nav header-navbar-rht">
+                    </ul>
+                </nav>
+            </header>
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <div class="content">
+                        <form method="POST" id="onboarding-form" action="@action">
+                            @CSRF.formField
+                            <section id="step-sign-up" class="section">
+                                <div class="banner-wrapper">
+                                    <div class="speaker-container pb-4">
+                                        <div class="speaker-avatar avatar avatar-lg avatar-online mr-2">
+                                            <img class="avatar-img rounded-circle" alt="" src="@routes.Assets.at("img/onboarding_speaker.jpeg")">
+                                        </div>
+                                        <div class="speaker-text d-flex align-items-center">
+                                            <h2 id="sign-up-speaker-text" class="mb-1">@messages("views.front.parentOnboarding.socialSignUp.speaker.text")</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6">
+                                                @SimpleInput(registrationForm, registrationForm.field("firstName"), inputId="first-name", label = "views.front.registration.form.firstName")
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                @SimpleInput(registrationForm, registrationForm.field("lastName"), inputId="last-name", label = "views.front.registration.form.lastName")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                @SimpleInput(registrationForm, registrationForm.field("email"), inputId="email", label = "views.front.registration.form.email", fieldType = "email")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                @SimpleInput(registrationForm, registrationForm.field("password"), inputId="password", label = "views.front.registration.form.password", fieldType = "password")
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                @SimpleInput(registrationForm, registrationForm.field("passwordConfirmation"), inputId="password-confirmation", label = "views.front.registration.form.passwordConfirmation", fieldType = "password")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @SimpleInput(registrationForm, registrationForm.field("address"), label = "views.front.registration.form.address", inputId = "address")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    @SimpleInput(registrationForm, registrationForm.field("zipCode"), label = "views.front.registration.form.zipCode", inputId = "zipCode")
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    @SimpleInput(registrationForm, registrationForm.field("city"), label = "views.front.registration.form.city", inputId = "city")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                @SimpleInput(registrationForm, registrationForm.field("phoneNumber"), inputId="phone-number", label = "views.front.registration.form.phoneNumber")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                        <div id="stepper-nav">
+                            <div class="banner-wrapper">
+                                <div id="nav-location">
+                                    <div id="sign-up-wrapper" class="w-100" style="display: block !important;">
+                                        <div class="d-flex justify-content-center">
+                                            <button id="sign-up-button" class="btn btn-cyan login-btn" type="submit" form="onboarding-form">@messages("views.front.parentOnboarding.signUpAndGetQuotation")</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/i18n/fr.js")"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/popper.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/bootstrap.min.js")"></script>
+
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/script.js")"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@GoogleService.apiKey&libraries=places"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/onboarding.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/address-search-form.js")"></script>
+</html>

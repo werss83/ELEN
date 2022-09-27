@@ -1,0 +1,12 @@
+@import models.account.AccountModel
+@(account: AccountModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div>
+    <span>@account.getAddress</span>
+    <br/>
+    @if(account.getAdditionalAddress != null && account.getAdditionalAddress.nonEmpty) {
+        <span>@account.getAdditionalAddress</span>
+        <br/>
+    }
+    <span>@account.getZipCode - @account.getCity</span>
+</div>

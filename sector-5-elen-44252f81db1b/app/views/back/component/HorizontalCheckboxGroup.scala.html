@@ -1,0 +1,11 @@
+@(
+        label: String = null,
+        labelClass: String = "col-form-label",
+)(content: Html)(implicit messages: play.i18n.Messages)
+
+<div class="row form-group checkbox-group">
+    <label class="col-md-2 @labelClass">@messages(label)</label>
+    <div class="col-md-10">
+        @content
+    </div>
+</div>

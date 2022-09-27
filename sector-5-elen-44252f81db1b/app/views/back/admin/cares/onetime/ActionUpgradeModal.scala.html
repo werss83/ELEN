@@ -1,0 +1,60 @@
+@import play.data.Form
+@import play.api.mvc.Call
+@import models.care.EffectiveCareModel
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleSelect
+@import models.care.enumeration.EffectiveCareStatus
+@import form.admin.cares.EditOneTimeCareStatusForm
+@import entities.multiselect.SelectData
+@import entities.multiselect.SelectOption
+@(
+        form: Form[EditOneTimeCareStatusForm],
+        effectiveCare: EffectiveCareModel,
+        modalId: String,
+        formTarget: Call
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@selectId = @{ String.format("upgrade-select-%s", effectiveCare.getUid.toString) }
+
+<div class="modal fade" id="@modalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.admin.cares.oneTime.actionUpgradeModal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form method="POST" action="@formTarget">
+                    @CSRF.formField
+                    <div class="form-content p-2">
+                        <div class="form-group">
+                        @defining({
+                            if(effectiveCare.getEffectiveUnavailability == null) {
+                                SelectData.fromEnum((e: EffectiveCareStatus) => e.getTranslationKey,
+                                    EffectiveCareStatus.PLANNED, EffectiveCareStatus.UNSUCCESSFUL, EffectiveCareStatus.CANCELLED)
+                            } else {
+                                SelectData.fromEnum((e: EffectiveCareStatus) => e.getTranslationKey,
+                                    EffectiveCareStatus.ASSIGNED, EffectiveCareStatus.PERFORMED, EffectiveCareStatus.CANCELLED)
+                            }
+                        }) { data =>
+                            @SimpleSelect(form, form.field("status"), data, label = "views.back.admin.cares.oneTime.actionUpgradeModal.label", inputId = selectId)
+                        }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">@messages("views.back.admin.cares.oneTime.actionUpgradeModal.confirm")</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.admin.cares.oneTime.actionUpgradeModal.cancel")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        $("#@modalId").ready(function() {
+            $("#@modalId .select").select2({
+                width: '100%'
+            });
+        });
+</script>

@@ -1,0 +1,124 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# General assets
+GET         /public/sitter/:s                               controllers.sitter.PictureController.GET_ServePicture(request: Request, s: models.sitter.SitterModel)
+GET         /public/*file                                   controllers.Assets.at(path: String ="/public", file: String, aggressiveCaching: Boolean = false)
+
+GET         /@dev/migrate                                   controllers.admin.DevController.GET_GenerateMigration(request: Request)
+GET         /healthcheck                                    controllers.HealthcheckController.GET_HealthCheck(request: Request)
+
+GET         /                                               controllers.HomeController.GET_Home(request: Request)
+GET         /policy                                         controllers.HomeController.GET_Policy(request: Request)
+GET         /terms                                          controllers.HomeController.GET_TermsAndConditions(request: Request)
+GET         /onboarding/parent                              controllers.OnboardingController.GET_ParentOnboarding(request: Request)
+POST        /onboarding/parent                              controllers.OnboardingController.POST_ParentStandardOnboarding(request: Request)
+
++nocsrf
+POST        /onboarding/parent/incomeLimit                  controllers.OnboardingController.POST_GetIncomeLimitAJAX(request: Request)
++nocsrf
+POST        /onboarding/parent/emailAvailable               controllers.OnboardingController.POST_GetEmailAvailableAJAX(request: Request)
++nocsrf
+POST        /onboarding/parent/subsidizeAmount              controllers.OnboardingController.POST_GetSubsidizeAmountAJAX(request: Request)
+
+POST        /onboarding/parent/facebook                     controllers.OnboardingController.POST_ParentFacebookOnboarding(request: Request)
+GET         /onboarding/parent/facebook/registration        controllers.OnboardingController.GET_ParentOnboardingFacebookRegistration(request: Request)
+POST        /onboarding/parent/facebook/registration        controllers.OnboardingController.POST_ParentOnboardingFacebookRegistration(request: Request)
+
+POST        /onboarding/parent/google                       controllers.OnboardingController.POST_ParentGoogleOnboarding(request: Request)
+GET         /onboarding/parent/google/registration          controllers.OnboardingController.GET_ParentOnboardingGoogleRegistration(request: Request)
+POST        /onboarding/parent/google/registration          controllers.OnboardingController.POST_ParentOnboardingGoogleRegistration(request: Request)
+
+POST        /onboarding/parent/quotation                    controllers.OnboardingController.POST_ParentOnboardingQuotation(request: Request)
+
+GET         /login                                          controllers.StandardLoginController.GET_Login(request: Request)
+POST        /login                                          controllers.StandardLoginController.POST_Login(request: Request)
+GET         /login/google                                   controllers.StandardLoginController.GET_LoginGoogle(request: Request)
+POST        /login/google                                   controllers.StandardLoginController.POST_LoginGoogle(request: Request)
+GET         /login/facebook                                 controllers.StandardLoginController.GET_LoginFacebook(request: Request)
+POST        /login/facebook                                 controllers.StandardLoginController.POST_LoginFacebook(request: Request)
+GET         /register                                       controllers.StandardLoginController.GET_Registration(request: Request)
+POST        /register                                       controllers.StandardLoginController.POST_Registration(request: Request)
+
+GET         /forgot-password                                controllers.ForgotPasswordController.GET_ForgotPassword(request: Request)
+POST        /forgot-password                                controllers.ForgotPasswordController.POST_ForgotPassword(request: Request)
+GET         /forgot-password/:token                         controllers.ForgotPasswordController.GET_ResetPassword(request: Request, token: String)
+POST        /forgot-password/:token                         controllers.ForgotPasswordController.POST_ResetPassword(request: Request, token: String)
+
+GET         /email-validate/:token                          controllers.EmailValidationController.GET_ValidateEmail(request: Request, token: String)
+
+GET         /callback                                       @org.pac4j.play.CallbackController.callback(request: Request)
+POST        /callback                                       @org.pac4j.play.CallbackController.callback(request: Request)
+GET         /logout                                         @org.pac4j.play.LogoutController.logout(request: Request)
+
+# Admin backoffice
+GET         /admin                                          controllers.admin.AdminController.GET_AdminDashboard(request: Request)
+GET         /admin/profile                                  controllers.ProfileController.GET_AdminProfile(request: Request)
+POST        /admin/profile                                  controllers.ProfileController.POST_AdminProfile(request: Request)
+POST        /admin/profile/updatePassword                   controllers.ProfileController.POST_AdminPassword(request: Request)
+
+GET         /admin/users                                    controllers.admin.UserManageController.GET_Users(request: Request)
++nocsrf
+POST        /admin/users/list                               controllers.admin.UserManageController.POST_UserAjaxList(request: Request)
+GET         /admin/users/create                             controllers.admin.UserManageController.GET_NewUser(request: Request)
+POST        /admin/users/create                             controllers.admin.UserManageController.POST_NewUser(request: Request)
+GET         /admin/users/:a                                 controllers.admin.UserManageController.GET_User(request: Request, a: models.account.AccountModel)
+POST        /admin/users/:a                                 controllers.admin.UserManageController.POST_UserProfile(request: Request, a: models.account.AccountModel)
+GET         /admin/users/:a/roles                           controllers.admin.UserManageController.GET_UserRedirect(request: Request, a: models.account.AccountModel)
+POST        /admin/users/:a/roles                           controllers.admin.UserManageController.POST_UserRoles(request: Request, a: models.account.AccountModel)
+POST        /admin/users/:a/delete                          controllers.admin.UserManageController.POST_DeleteUser(request: Request, a: models.account.AccountModel)
+GET         /admin/users/:a/impersonate                     controllers.admin.UserManageController.GET_Impersonate(request: Request, a: models.account.AccountModel)
+GET         /leave-impersonate                              controllers.admin.UserManageController.GET_ExitImpersonate(request: Request)
+
+GET         /admin/cares/one-time                           controllers.admin.OneTimeCareController.GET_Cares(request: Request)
++nocsrf
+POST        /admin/cares/one-time/list                      controllers.admin.OneTimeCareController.POST_CaresAjaxList(request: Request)
+POST        /admin/cares/one-time/:e/update                 controllers.admin.OneTimeCareController.POST_UpdateCare(request: Request, e: models.care.EffectiveCareModel)
+POST        /admin/cares/one-time/:e/status                 controllers.admin.OneTimeCareController.POST_UpdateCareStatus(request: Request, e: models.care.EffectiveCareModel)
+
+GET         /admin/cares/scheduled                          controllers.admin.ScheduledCareController.GET_Cares(request: Request)
++nocsrf
+POST        /admin/cares/scheduled/list                     controllers.admin.ScheduledCareController.POST_CaresAjaxList(request: Request)
+GET         /admin/cares/scheduled/:b/                      controllers.admin.ScheduledCareController.GET_CareDetail(request: Request, b: models.care.BookedCareModel)
++nocsrf
+POST        /admin/cares/scheduled/:b/list                  controllers.admin.ScheduledCareController.POST_CareDetailAjaxList(request: Request, b: models.care.BookedCareModel)
+POST        /admin/cares/scheduled/:b/update                controllers.admin.ScheduledCareController.POST_UpdateBookedCare(request: Request, b: models.care.BookedCareModel)
+POST        /admin/cares/scheduled/:b/updateFuture          controllers.admin.ScheduledCareController.POST_UpdateFutureCare(request: Request, b: models.care.BookedCareModel)
+POST        /admin/cares/scheduled/:b/:e/update             controllers.admin.ScheduledCareController.POST_UpdateCare(request: Request, b: models.care.BookedCareModel, e: models.care.EffectiveCareModel)
+POST        /admin/cares/scheduled/:b/:e/status             controllers.admin.ScheduledCareController.POST_UpdateCareStatus(request: Request, b: models.care.BookedCareModel, e: models.care.EffectiveCareModel)
+
+GET         /admin/cares/all                                controllers.admin.AllCareController.GET_Cares(request: Request)
++nocsrf
+POST        /admin/cares/all/list                           controllers.admin.AllCareController.POST_CaresAjaxList(request: Request)
+POST        /admin/cares/all/:e/update                      controllers.admin.AllCareController.POST_UpdateCare(request: Request, e: models.care.EffectiveCareModel)
+POST        /admin/cares/all/:e/status                      controllers.admin.AllCareController.POST_UpdateCareStatus(request: Request, e: models.care.EffectiveCareModel)
+
+GET         /admin/export                                   controllers.admin.ExportController.GET_Export(request: Request)
+POST        /admin/export/sitter                            controllers.admin.ExportController.POST_Export(request: Request)
+
+
+# Parent backoffice
+GET         /parent                                         controllers.parent.ParentController.GET_ParentDashboard(request: Request)
+GET         /parent/profile                                 controllers.ProfileController.GET_ParentProfile(request: Request)
+POST        /parent/profile                                 controllers.ProfileController.POST_ParentProfile(request: Request)
+POST        /parent/profile/updatePassword                  controllers.ProfileController.POST_ParentPassword(request: Request)
+
+GET         /parent/children                                controllers.parent.ChildrenController.GET_MyChildren(request: Request)
+POST        /parent/children                                controllers.parent.ChildrenController.POST_CreateOrUpdateChild(request: Request)
+POST        /parent/children/:c/delete                      controllers.parent.ChildrenController.POST_DeleteChild(request: Request, c: models.children.ChildrenModel)
+
+GET         /parent/care/current                            controllers.parent.CareController.GET_CurrentCare(request: Request)
+GET         /parent/care/new                                controllers.parent.CareController.GET_ScheduleNewCare(request: Request)
+POST        /parent/care/new                                controllers.parent.CareController.POST_ScheduleNewCare(request: Request)
+POST        /parent/care/new/quotation                      controllers.parent.CareController.POST_ScheduleNewCareQuotation(request: Request)
+
+GET         /parent/caf                                     controllers.parent.CafController.GET_Caf(request: Request)
+POST        /parent/caf                                     controllers.parent.CafController.POST_Caf(request: Request)
+
+
+# Sitter backoffice
+GET         /sitter                                         controllers.sitter.SitterController.GET_SitterDashboard(request: Request)
+GET         /sitter/profile                                 controllers.ProfileController.GET_SitterProfile(request: Request)
+POST        /sitter/profile                                 controllers.ProfileController.POST_SitterProfile(request: Request)
+POST        /sitter/profile/updatePassword                  controllers.ProfileController.POST_SitterPassword(request: Request)

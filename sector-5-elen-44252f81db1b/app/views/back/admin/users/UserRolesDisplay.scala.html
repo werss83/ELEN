@@ -1,0 +1,19 @@
+@import models.account.AccountModel
+@import models.account.RoleModel
+@import security.Role
+@(account: AccountModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div>
+    @for(role: RoleModel <- account.getRoles) {
+        @defining({
+            role.getRole match {
+                case Role.ROLE_PARENT => "bg-primary"
+                case Role.ROLE_SITTER => "bg-purple"
+                case Role.ROLE_ADMIN => "bg-warning"
+                case _ => "bg-light"
+            }
+        }) { colorClass =>
+            <span class="badge badge-pill @colorClass inv-badge">@messages(role.getRole.getTranslationKey)</span> <br/>
+        }
+    }
+</div>

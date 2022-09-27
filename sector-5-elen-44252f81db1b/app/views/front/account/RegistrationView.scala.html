@@ -1,0 +1,100 @@
+@import views.html.helper.CSRF
+@import play.data.Form
+@import form.accountservice.RegistrationForm
+@import views.html.front.component.FocusInput
+@import views.html.front.component.SimpleInput
+@import services.GoogleService
+@(form: Form[RegistrationForm], formAction: String, displaySocial: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@front.common.BaseView(css, js, "account-page") {
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <form method="POST" action="@formAction">
+                        @CSRF.formField
+                        <div class="account-content">
+                            <div class="row align-items-center justify-content-center login-right">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="login-header">
+                                        <h3>
+                                            @messages("views.front.registration.hello")
+                                            @* <a href="doctor-register.html">Are you a Doctor?</a> *@
+                                        </h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-6">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("firstName"), label = "views.front.registration.form.firstName")
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("lastName"), label = "views.front.registration.form.lastName")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @FocusInput(form, form.field("email"), label = "views.front.registration.form.email", fieldType = "email")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("password"), label = "views.front.registration.form.password", fieldType = "password", retrieveValue = false)
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("passwordConfirmation"), label = "views.front.registration.form.passwordConfirmation", fieldType = "password", retrieveValue = false)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-lg-6">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @FocusInput(form, form.field("address"), label = "views.front.registration.form.address", inputId = "address")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("zipCode"), label = "views.front.registration.form.zipCode", inputId = "zipCode")
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    @FocusInput(form, form.field("city"), label = "views.front.registration.form.city", inputId = "city")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @FocusInput(form, form.field("additionalAddress"), label = "views.front.registration.form.additionalAddress")
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @FocusInput(form, form.field("phoneNumber"), label = "views.front.registration.form.phoneNumber")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-8 col-lg-6">
+                                    <div class="text-right">
+                                        <a class="forgot-link blue" href="@routes.StandardLoginController.GET_Login()">@messages("views.front.registration.haveAnAccount")</a>
+                                    </div>
+                                    <button class="btn btn-cyan btn-block btn-lg login-btn" type="submit">@messages("views.front.registration.signup")</button>
+                                    @if(displaySocial) {
+                                        @front.account.OrSocialView()
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+}
+
+@js = {
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@GoogleService.apiKey&libraries=places"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/address-search-form.js")"></script>
+}

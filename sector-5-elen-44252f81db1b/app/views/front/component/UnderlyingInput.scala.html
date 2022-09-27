@@ -1,0 +1,51 @@
+@import play.data.Form
+@import play.api.data.FormError
+@import twirl.form.FieldAttrs
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        inputBaseClass: String,
+        inputRender: (String, String, Html) => Html,
+        label: String = null,
+        labelClass: String = "",
+        labelErrorClass: String = "",
+        inputExtraClass: String = "",
+        parentDivClass: String = "",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@fieldAttrs = @{ new FieldAttrs(field) }
+
+@iId = @{if (inputId != null && !inputId.isEmpty) inputId else (form.getBackedType.getCanonicalName + "." + field.name).replaceAll("\\.", "-") }
+@iClass = @{inputBaseClass + (if(field.hasErrors) " form-error" else "") + (if(!inputExtraClass.isEmpty) " " + inputExtraClass else "")}
+@lClass = @{labelClass + (if(field.hasErrors){" " + labelErrorClass} else "")}
+
+@if(fieldAttrs.doRender) {
+    <div class="@parentDivClass">
+        @before
+        @if(label != null) {
+            <label class="@lClass" for="@iId">@messages(label)@if(fieldAttrs.isRequired) {
+                <span class="text-danger">*</span>
+            }</label>
+        }
+        @inputRender.apply(iId, iClass, Html(fieldAttrs.getAttrs(extraAttrs, devMode)))
+        @if(field.hasErrors) {
+            @if(field.errors.length == 1) {
+                @defining(field.error.get) { error: FormError =>
+                    <span class="text-danger form-error-cause">@error.format</span>
+                }
+            } else {
+                <ul class="text-danger form-error-cause form-error-list">
+                @for(error: FormError <- field.errors) {
+                    <li>@error.format</li>
+                }
+                </ul>
+            }
+        }
+        @after
+    </div>
+}

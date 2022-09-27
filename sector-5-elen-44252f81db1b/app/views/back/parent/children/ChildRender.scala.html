@@ -1,0 +1,108 @@
+@import models.children.enumeration.ChildCategory
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import entities.dto.parent.ChildrenDTO.ChildDTO
+@import org.joda.time.DateTime
+@import views.html.back.component.SimpleSelect
+@import models.children.enumeration.UsualChildcare
+@(dto: ChildDTO)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@form = @{dto.getForm}
+@child = @{dto.getModel}
+@editModalId = @{dto.getEditModalId}
+@deleteModalId = @{dto.getDeleteModalId}
+
+<div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>@child.getFirstName</h4>
+        </div>
+        <div class="card-body">
+            @if(ChildCategory.BIRTHDAY.eq(child.getCategory)) {
+                <p>
+                    @messages("views.back.parent.children.child.bornDate") : @child.getBirthDate.toString("dd/MM/yyyy")
+                </p>
+                @defining(child.getBirthDate) { birthDate =>
+                    <p>
+                        @messages("views.back.parent.children.child.categoryCAF") :
+                        @if(birthDate.isAfter(DateTime.now().minusYears(3).toLocalDate)) {
+                            @messages("views.back.parent.children.child.caf.less3yo")
+                        } else {
+                            @if(birthDate.isAfter(DateTime.now().minusYears(6).toLocalDate)) {
+                                @messages("views.back.parent.children.child.caf.less6yo")
+                            } else {
+                                @messages("views.back.parent.children.child.caf.more6yo")
+                            }
+                        }
+                    </p>
+                }
+                @if(child.getUsualChildcare != null) {
+                    <p>
+                        @messages("views.back.parent.children.child.usualCare") : @messages(child.getUsualChildcare.getTranslationKey)
+                    </p>
+                }
+            } else {
+                <div class="alert alert-warning" role="alert">
+                    <strong>@messages("views.back.parent.children.child.warning.title")</strong>
+                    <br/>
+                    @messages("views.back.parent.children.child.warning.message")
+                </div>
+            }
+        </div>
+        <div class="card-footer text-right">
+            <a class="btn btn-primary" data-toggle="modal" href="#@editModalId">@messages("views.back.parent.children.child.edit")</a>
+            <a class="btn btn-secondary" data-toggle="modal" href="#@deleteModalId">@messages("views.back.parent.children.child.remove")</a>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="@editModalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.parent.children.child.edit.modal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <form method="POST" action="@controllers.parent.routes.ChildrenController.POST_CreateOrUpdateChild()">
+                    @CSRF.formField
+                    <input name="uid" type="hidden" value="@child.getUid"/>
+                    <div class="form-content p-2">
+                        @SimpleInput(form, form.field("firstname"), label = "views.back.parent.children.child.form.firstName")
+                        @SimpleInput(form, form.field("birthday"), label = "views.back.parent.children.child.form.birthday", inputExtraClass = "date-input", placeholder = "__/__/____")
+                        @SimpleSelect(form, form.field("usualCare"), label = "views.back.parent.children.child.form.usualCare", config = UsualChildcare.selectData)
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-cyan">@messages("views.back.parent.children.child.edit.modal.confirm")</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.parent.children.child.edit.modal.cancel")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="@deleteModalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.parent.children.child.delete.modal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form method="POST" action="@controllers.parent.routes.ChildrenController.POST_DeleteChild(child)">
+                    @CSRF.formField
+                    <div class="form-content p-2">
+                        <p class="mb-4">@messages("views.back.parent.children.child.delete.modal.message")</p>
+
+                        <button type="submit" class="btn btn-danger">@messages("views.back.parent.children.child.delete.modal.confirm")</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.parent.children.child.delete.modal.cancel")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

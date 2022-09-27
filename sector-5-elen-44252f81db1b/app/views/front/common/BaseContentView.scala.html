@@ -1,0 +1,29 @@
+@import system.BuildInfo
+@(pageStyle: Html = null, pageScript: Html = null, nav: Array[scala.Tuple2[Call, String]] = null, contentWrapExtra: String = "")(content: Html)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@breadcrumb(nav: Array[scala.Tuple2[Call, String]]) = {
+    @if(nav != null) {
+        <ul class="uk-breadcrumb">
+            @for(elem: scala.Tuple2[Call, String] <- nav) {
+                @if(elem._1 != null) {
+                    <li><a href="@elem._1">@elem._2</a></li>
+                } else {
+                    <li><span>@elem._2</span></li>
+                }
+            }
+        </ul>
+    }
+}
+
+@front.common.BaseView(pageStyle, pageScript) {
+    <div class="content-wrap @contentWrapExtra">
+        @breadcrumb(nav)
+        @content
+    </div>
+    <div class="footer">
+        <p class="uk-margin-remove-vertical uk-margin-small-left uk-text-meta uk-position-bottom" style="padding-bottom: 5px">
+            Elen &copy; 2020 - @Calendar.getInstance().get(Calendar.YEAR)<br/>
+            @messages("views.common.baseContent.version") @BuildInfo.getProjectVersion (@BuildInfo.getBuildDate(false, false))
+        </p>
+    </div>
+}

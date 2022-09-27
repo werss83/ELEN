@@ -1,0 +1,17 @@
+@import models.care.BookedCareModel
+@import models.account.AccountModel
+@(bookedCare: BookedCareModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@account = @{
+    var a = bookedCare.getParent.getAccount
+    if (a == null) {
+        a = AccountModel.find.query.where().eq("parent", bookedCare.getParent).setIncludeSoftDeletes().findOne()
+    }
+    a
+}
+
+<div class="text-center">
+    @account.getFullName
+    <br/>
+    @account.getEmail
+</div>

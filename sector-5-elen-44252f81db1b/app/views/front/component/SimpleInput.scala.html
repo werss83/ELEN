@@ -1,0 +1,48 @@
+@import play.data.Form
+@import play.data.validation.ValidationError
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        placeholder: String = "",
+        label: String = null,
+        labelClass: String = "",
+        labelErrorClass: String = "",
+        fieldType: String = "text",
+        inputExtraClass: String = "",
+        parentDivClass: String = "form-group auto-height",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@generateInput(iId: String, iClass: String, extraHtml: Html) = {
+    @if(fieldType == "password") {
+        <div class="input-group">
+            <input id="@iId" class="@iClass" type="@fieldType" name="@field.name" placeholder="@messages(placeholder)" value="@{if(retrieveValue){field.value.getOrElse("")}}" @extraHtml>
+            <div class="input-group-append toggle-password" data-toggle="@iId">
+                <span class="input-group-text"><i class="fa fa-eye" aria-hidden="true"></i></span>
+            </div>
+        </div>
+    } else {
+        <input id="@iId" class="@iClass" type="@fieldType" name="@field.name" placeholder="@messages(placeholder)" value="@{if(retrieveValue){field.value.getOrElse("")}}" @extraHtml>
+    }
+}
+
+@front.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = "form-control",
+    inputRender = generateInput,
+    label = label,
+    labelClass = labelClass,
+    labelErrorClass = labelErrorClass,
+    inputExtraClass = inputExtraClass,
+    parentDivClass = parentDivClass,
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after,
+    devMode = devMode)

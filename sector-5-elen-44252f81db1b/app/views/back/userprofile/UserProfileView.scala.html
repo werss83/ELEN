@@ -1,0 +1,75 @@
+@import form.profile.ProfileForm
+@import play.data.Form
+@import views.html.helper.CSRF
+@import services.GoogleService
+@import views.html.back.component.SimpleInput
+@import form.profile.ChangePasswordForm
+@import play.api.mvc.Call
+@(
+        profileForm: Form[ProfileForm],
+        passwordForm: Form[ChangePasswordForm],
+        profileCall: Call,
+        passwordCall: Call
+)(baseView: (Html, Html) => Html => Html)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@baseView(css, js) {
+    <div class="row">
+        <div class="col-xl-12 d-flex">
+            <div class="card flex-fill">
+                <div class="card-header">
+                    <h4>@messages("views.back.userProfile.view.title")</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="@profileCall">
+                        @CSRF.formField
+
+                        @back.userprofile.UserProfileForm(profileForm)
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-cyan">@messages("views.back.userProfile.view.submit")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 d-flex">
+            <div class="card flex-fill">
+                <div class="card-header">
+                    <h4>@messages("views.back.userProfile.view.updatePassword.title")</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="@passwordCall">
+                        @CSRF.formField
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                @SimpleInput(passwordForm, passwordForm.field("currentPassword"), fieldType = "password", label = "views.back.userProfile.view.currentPassword", retrieveValue = false)
+                            </div>
+                            <div class="col-lg-4">
+                                @SimpleInput(passwordForm, passwordForm.field("newPassword"), fieldType = "password", label = "views.back.userProfile.view.newPassword", retrieveValue = false)
+                            </div>
+                            <div class="col-lg-4">
+                                @SimpleInput(passwordForm, passwordForm.field("newPasswordConfirmation"), fieldType = "password", label = "views.back.userProfile.view.newPasswordConfirmation", retrieveValue = false)
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-cyan">@messages("views.back.userProfile.view.submit")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@css = {
+
+}
+
+@js = {
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@GoogleService.apiKey&libraries=places"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/address-search-form.js")"></script>
+}

@@ -1,0 +1,31 @@
+@import play.data.Form
+@import play.data.validation.ValidationError
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        placeholder: String = "",
+        label: String = null,
+        fieldType: String = "text",
+        inputExtraClass: String = "",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@front.component.SimpleInput(
+    form = form,
+    field = field,
+    placeholder = placeholder,
+    fieldType = fieldType,
+    label = label,
+    labelClass = "focus-label",
+    inputExtraClass = "floating " + inputExtraClass,
+    parentDivClass = "form-group form-focus auto-height",
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after,
+    devMode = devMode)

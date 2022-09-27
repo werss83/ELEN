@@ -1,0 +1,47 @@
+@import play.data.Form
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import form.admin.cares.EditScheduledCareForm
+@import models.care.BookedCareModel
+@(
+        form: Form[EditScheduledCareForm],
+        bookedCare: BookedCareModel,
+        modalId: String
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@startDateId = @{ String.format("edit-start-date-%s", bookedCare.getUid.toString) }
+@endDateId = @{ String.format("edit-end-date-%s", bookedCare.getUid.toString) }
+
+<div class="modal fade" id="@modalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.admin.cares.scheduled.actionEditModal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form method="POST" action="@controllers.admin.routes.ScheduledCareController.POST_UpdateBookedCare(bookedCare)">
+                    @CSRF.formField
+                    <div class="form-content p-2">
+                        @SimpleInput(form, form.field("startDate"), label = "views.back.admin.cares.scheduled.actionEditModal.startDate", inputExtraClass = "datetime-input", placeholder = "__/__/____ __:__", inputId = startDateId)
+
+                        @SimpleInput(form, form.field("endDate"), label = "views.back.admin.cares.scheduled.actionEditModal.endDate", inputExtraClass = "datetime-input", placeholder = "__/__/____ __:__", inputId = endDateId)
+
+                        <button type="submit" class="btn btn-primary">@messages("views.back.admin.cares.scheduled.actionEditModal.confirm")</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.admin.cares.scheduled.actionEditModal.cancel")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        $("#@modalId").ready(function() {
+            $("#@modalId input.datetime-input").mask('99/99/9999 99:99');
+            $("#@modalId .select").select2({
+                width: '100%'
+            });
+        });
+</script>

@@ -1,0 +1,50 @@
+@import models.account.AccountModel
+@(account: AccountModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@emailviews.BaseEmailView(null, messages("views.email.welcome.title", account.getFirstName)) {
+    <p>
+        @messages("views.email.welcome.title", account.getFirstName)
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p1"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p2"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p3"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p4"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p5"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p6"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p7"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p8"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p9"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p10"))
+    </p>
+    <p>
+        @Html(messages("views.email.welcome.p11"))
+    </p>
+
+    <div style="border: 4px solid #3652B6; padding:7px; margin-bottom: 10px;">
+        <p>
+            NB : @Html(messages("views.email.welcome.p12"))
+        </p>
+        <p>
+            @Html(messages("views.email.welcome.p13", controllers.parent.routes.CafController.GET_Caf().absoluteURL()))
+        </p>
+    </div>
+}

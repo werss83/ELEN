@@ -1,0 +1,51 @@
+@import play.data.Form
+@import twirl.form.FieldAttrs
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        placeholder: String = null,
+        label: String = null,
+        labelClass: String = "",
+        labelErrorClass: String = "",
+        fieldType: String = "text",
+        inputExtraClass: String = "",
+        parentDivClass: String = "form-group auto-height",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        groupBefore: Html = null,
+        groupAfter: Html = null,
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@placeholderAttr = { @if(placeholder!= null){ placeholder="@messages(placeholder)" } }
+
+@generateInput(iId: String, iClass: String, extraHtml: Html, fieldAttrs: FieldAttrs) = {
+    <div class="input-group">
+        <div class="input-group-prepend">
+            @groupBefore
+        </div>
+        <input id="@iId" class="@iClass" type="@fieldType" name="@field.name" @placeholderAttr value="@{if(retrieveValue){field.value.getOrElse("")}}" @extraHtml>
+        <div class="input-group-append">
+            @groupAfter
+        </div>
+    </div>
+}
+
+@back.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = "form-control",
+    inputRender = generateInput,
+    label = label,
+    labelClass = labelClass,
+    labelErrorClass = labelErrorClass,
+    inputExtraClass = inputExtraClass,
+    parentDivClass = parentDivClass,
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after,
+    devMode = devMode)

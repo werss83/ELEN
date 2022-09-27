@@ -1,0 +1,55 @@
+@import play.data.Form
+@import play.api.mvc.Call
+@import form.admin.cares.EditOneTimeCareForm
+@import models.care.EffectiveCareModel
+@import views.html.helper.CSRF
+@import views.html.back.component.SimpleInput
+@import views.html.back.component.SimpleSelect
+@import entities.multiselect.SelectData
+@(
+        form: Form[EditOneTimeCareForm],
+        sitterData: SelectData,
+        effectiveCare: EffectiveCareModel,
+        modalId: String,
+        formTarget: Call
+)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@startDateId = @{ String.format("edit-start-date-%s", effectiveCare.getUid.toString) }
+@endDateId = @{ String.format("edit-end-date-%s", effectiveCare.getUid.toString) }
+@selectId = @{ String.format("edit-select-%s", effectiveCare.getUid.toString) }
+
+<div class="modal fade" id="@modalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.admin.cares.oneTime.actionEditModal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form method="POST" action="@formTarget">
+                    @CSRF.formField
+                    <div class="form-content p-2">
+                        @SimpleInput(form, form.field("startDate"), label = "views.back.admin.cares.oneTime.actionEditModal.startDate", inputExtraClass = "datetime-input", placeholder = "__/__/____ __:__", inputId = startDateId)
+
+                        @SimpleInput(form, form.field("endDate"), label = "views.back.admin.cares.oneTime.actionEditModal.endDate", inputExtraClass = "datetime-input", placeholder = "__/__/____ __:__", inputId = endDateId)
+
+                        @SimpleSelect(form, form.field("sitterUid"), sitterData, label = "views.back.admin.cares.oneTime.actionEditModal.sitter", inputId = selectId)
+
+                        <button type="submit" class="btn btn-primary">@messages("views.back.admin.cares.oneTime.actionEditModal.confirm")</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.admin.cares.oneTime.actionEditModal.cancel")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#@modalId").ready(function() {
+        $("#@modalId input.datetime-input").mask('99/99/9999 99:99');
+        $("#@modalId .select").select2({
+            width: '100%'
+        });
+    });
+</script>

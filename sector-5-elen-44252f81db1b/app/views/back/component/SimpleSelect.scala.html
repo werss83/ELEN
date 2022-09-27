@@ -1,0 +1,71 @@
+@import play.data.Form
+@import entities.multiselect.SelectData
+@import entities.multiselect.SelectOption
+@import entities.multiselect.SelectGroup
+@import java.util
+@import twirl.form.FieldAttrs
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        config: SelectData,
+        selectClass: String = "select form-control",
+        label: String = null,
+        fieldType: String = "text",
+        extraClass: String = "",
+        parentClass: String = "form-group",
+        inputId: String = null,
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true
+)(implicit messages: play.i18n.Messages)
+
+@selectedOptions = @{
+    if(field.indexes == null || field.indexes.isEmpty) {
+        scala.List(field.value.orNull)
+    } else {
+        field.indexes.map(idx => field.apply("[%d]".format(idx)).value.orNull)
+    }
+}
+
+@extraDataToHtml(extraData: util.Map[String, String]) = {
+    @for(entry: util.Map.Entry[String, String] <- extraData.entrySet()) {
+        @entry.getKey="@entry.getValue"
+    }
+}
+
+@generateSelect(iId: String, iClass: String, extraHtml: Html, fieldAttrs: FieldAttrs) = {
+    <div>
+        <select id="@iId" name="@{field.name}" class="@iClass" @extraDataToHtml(config.extraData) @extraHtml>
+            @for(group: SelectGroup <- config.groups) {
+                <optgroup label='@messages(group.name)' @extraDataToHtml(group.extraData)>
+                @for(option: SelectOption <- group.options) {
+                    @defining(selectedOptions.contains(option.key)) { selected =>
+                        <option value="@option.key" @if(selected){selected="selected"} @extraDataToHtml(option.extraData)>@messages(option.name)</option>
+                    }
+                }
+                </optgroup>
+            }
+            @for(option: SelectOption <- config.options) {
+                @defining(selectedOptions.contains(option.key)) { selected =>
+                    <option value="@option.key" @if(selected){selected="selected"} @extraDataToHtml(option.extraData)>@messages(option.name)</option>
+                }
+            }
+        </select>
+    </div>
+}
+
+@back.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = selectClass,
+    inputRender = generateSelect,
+    label = label,
+    labelClass = "",
+    labelErrorClass = "",
+    inputExtraClass = extraClass,
+    parentDivClass = parentClass,
+    inputId = inputId,
+    extraAttrs = Seq(),
+    before = before,
+    after = after
+)

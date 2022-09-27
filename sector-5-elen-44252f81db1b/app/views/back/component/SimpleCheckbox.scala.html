@@ -1,0 +1,44 @@
+@import play.data.Form
+@import play.data.validation.ValidationError
+@import twirl.form.FieldAttrs
+@(
+        form: Form[_],
+        field: play.api.data.Field,
+        label: String = null,
+        labelClass: String = "",
+        labelErrorClass: String = "",
+        inputExtraClass: String = "",
+        parentDivClass: String = "form-group auto-height",
+        inputId: String = null,
+        extraAttrs: Seq[(String, String)] = Seq(),
+        before: Html = null,
+        after: Html = null,
+        retrieveValue: Boolean = true,
+        devMode: Boolean = false
+)(implicit messages: play.i18n.Messages)
+
+@checked = @{retrieveValue && !field.value.getOrElse("false").equals("false")}
+
+@generateInput(iId: String, iClass: String, extraHtml: Html, fieldAttrs: FieldAttrs) = {
+    <div class="checkbox">
+        <label class="@labelClass">
+            <input id="@iId" class="@iClass" type="checkbox" name="@field.name" @extraHtml @if(checked){checked="checked"}>
+            @if(label != null) {
+                @messages(label) @if(fieldAttrs.isRequired) {<span class="text-danger">*</span>}
+            }
+        </label>
+    </div>
+}
+
+@back.component.UnderlyingInput(
+    form = form,
+    field = field,
+    inputBaseClass = "",
+    inputRender = generateInput,
+    inputExtraClass = inputExtraClass,
+    parentDivClass = parentDivClass,
+    inputId = inputId,
+    extraAttrs = extraAttrs,
+    before = before,
+    after = after,
+    devMode = devMode)

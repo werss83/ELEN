@@ -1,0 +1,78 @@
+@import entities.dto.quotation.QuotationDTO
+@import views.html.front.parent.QuotationView
+
+@(quotation: QuotationDTO)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="@messages.lang().code()">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
+        <meta http-equiv="cleartype" content="on">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="author" content="Elen"/>
+        <title>Elen</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/bootstrap.min.css")">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/fontawesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/fontawesome/css/all.min.css")">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("admin/assets/css/feathericon.min.css")">
+
+        <!-- JQuery UI -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.css")">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/custom.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/onboarding.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/quotation.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("color/color.css")">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="@routes.Assets.at("assets/css/style.css")">
+
+    </head>
+    <body>
+        <div class="main-wrapper">
+            <header class="header">
+                <nav class="navbar navbar-expand-lg header-nav">
+                    <div class="navbar-header">
+                        <a href="@routes.HomeController.GET_Home()" class="navbar-brand blue logo">
+                            <div class="text-logo">@messages("company.project.name")</div>
+                        </a>
+                    </div>
+                    <div class="main-menu-wrapper">
+                        <div class="menu-header">
+                        </div>
+                        <ul class="main-nav">
+                        </ul>
+                    </div>
+                    <ul class="nav header-navbar-rht">
+                    </ul>
+                </nav>
+            </header>
+            <div class="page-wrapper">
+                @QuotationView(quotation, controllers.routes.OnboardingController.POST_ParentOnboardingQuotation())
+            </div>
+        </div>
+    </body>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/plugins/jquery-ui/i18n/fr.js")"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/popper.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/bootstrap.min.js")"></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/script.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/onboarding.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("assets/js/address-search-form.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("capital/capital.js")"></script>
+</html>

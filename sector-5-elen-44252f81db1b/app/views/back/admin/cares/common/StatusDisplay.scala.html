@@ -1,0 +1,18 @@
+@import models.care.EffectiveCareModel
+@import models.care.enumeration.EffectiveCareStatus
+@(effectiveCare: EffectiveCareModel)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div>
+    @defining({
+        effectiveCare.getStatus match {
+            case EffectiveCareStatus.PLANNED => "bg-warning-light"
+            case EffectiveCareStatus.ASSIGNED => "bg-primary-light"
+            case EffectiveCareStatus.PERFORMED => "bg-success-light"
+            case EffectiveCareStatus.CANCELLED => "bg-secondary"
+            case EffectiveCareStatus.UNSUCCESSFUL => "bg-danger-light"
+            case _ => ""
+        }
+    }) { colorClass =>
+        <h5><span class="badge badge-pill @colorClass inv-badge-free-text">@messages(effectiveCare.getStatus.getTranslationKey)</span></h5>
+    }
+</div>

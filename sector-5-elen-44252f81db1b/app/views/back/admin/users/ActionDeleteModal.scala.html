@@ -1,0 +1,33 @@
+@import views.html.helper.CSRF
+@import models.account.AccountModel
+@(account: AccountModel, modalId: String)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<div class="modal fade" id="@modalId" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@messages("views.back.admin.users.actionDeleteModal.title")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form method="POST" action="@controllers.admin.routes.UserManageController.POST_DeleteUser(account)">
+                    @CSRF.formField
+                <div class="form-content p-2">
+                    <p class="mb-4">@messages("views.back.admin.users.actionDeleteModal.message")</p>
+                    <p class="text-left">
+                        <span class="font-weight-bold">@account.getEmail</span><br/>
+                        <span>@account.getFirstName @account.getLastName</span><br/>
+                        <span>@account.getAddress @account.getAdditionalAddress</span><br/>
+                        <span>@account.getZipCode - @account.getCity</span>
+                    </p>
+
+                    <button type="submit" class="btn btn-danger">@messages("views.back.admin.users.actionDeleteModal.confirm")</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@messages("views.back.admin.users.actionDeleteModal.cancel")</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,269 @@
+/* Custom width & height */
+.w-10 {
+    width: 10% !important;
+}
+
+.w-15 {
+    width: 15% !important;
+}
+
+.w-20 {
+    width: 20% !important;
+}
+
+.w-30 {
+    width: 30% !important;
+}
+
+.w-40 {
+    width: 40% !important;
+}
+
+.w-45 {
+    width: 45% !important;
+}
+
+.w-55 {
+    width: 55% !important;
+}
+
+.w-60 {
+    width: 60% !important;
+}
+
+.w-70 {
+    width: 70% !important;
+}
+
+.w-80 {
+    width: 80% !important;
+}
+
+.w-85 {
+    width: 85% !important;
+}
+
+.w-90 {
+    width: 90% !important;
+}
+
+.w-33 {
+    width: 33% !important;
+}
+
+.w-66 {
+    width: 66% !important;
+}
+
+.h-15 {
+    height: 15% !important;
+}
+
+.h-20 {
+    height: 20% !important;
+}
+
+.h-40 {
+    height: 40% !important;
+}
+
+.h-60 {
+    height: 60% !important;
+}
+
+@media (min-width: 992px) {
+    .page {
+        height: 1200px;
+    }
+
+    .inner-page {
+        padding: 50px 70px 10px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .inner-page-footer {
+        flex-direction: column;
+    }
+
+    .inner-page-footer-legal {
+        text-align: center;
+    }
+
+    .inner-page-footer #sap {
+        width: 76px !important;
+    }
+}
+
+.white-wrap {
+    white-space: pre-wrap;
+}
+
+/* Quotation */
+#header {
+    display: flex;
+    justify-content: space-between;
+}
+
+#customer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-left: 10px;
+}
+
+#step-quotation > .banner-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.euro::after {
+    content: "€";
+    padding-left: 4px;
+}
+
+#price,
+#eligibility {
+    border-top: 3px solid;
+    border-bottom: 3px solid;
+    border-color: var(--main-blue-color);
+}
+
+.quotation-price {
+    border: 2px dashed var(--main-blue-color);
+    padding: 10px;
+    min-width: 260px;
+    max-width: 460px;
+    width: 100%;
+}
+
+.quotation-price > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.quotation-title {
+    text-transform: uppercase;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+#quotation-progress > .progress {
+    width: 240px;
+    -webkit-transform: rotate(-90deg) translate(-125px, -110px);
+    transform: rotate(-90deg) translate(-125px, -110px);
+}
+
+#price-progress > .progress {
+    width: 300px;
+    -webkit-transform: rotate(-90deg) translate(-160px, -140px);
+    transform: rotate(-90deg) translate(-160px, -140px);
+}
+
+#quotation-progress-details {
+    height: 240px;
+}
+
+#price-progress-details {
+    height: 300px;
+}
+
+#quotation-progress-details > div,
+#price-progress-details > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 34px;
+    overflow-x: visible;
+    white-space: nowrap;
+}
+
+.asterisk {
+    font-style: italic;
+    font-size: 12px;
+}
+
+.no-style,
+.checked,
+.times {
+    list-style: none;
+}
+
+.checked:before {
+    content: "✅ ";
+    font-size: 16px;
+}
+
+.times:before {
+    content: "❌ ";
+    font-size: 16px;
+}
+
+.next:after {
+    content: "-";
+}
+
+#sap {
+    width: 100px;
+}
+
+.page {
+    margin: 14px 0;
+    box-shadow: 0 0 3px 0 #666666;
+}
+
+.inner-page {
+    padding: 10px;
+    height: calc(100% - 54px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#caf {
+    width: 25px;
+}
+
+.inner-page-header {
+    background-color: var(--main-blue-color);
+    display: flex;
+    font-size: 36px;
+    color: white;
+}
+
+.inner-page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.inner-page-footer #sap {
+    width: 84px;
+}
+
+.inner-page-footer-company {
+    font-size: 30px;
+}
+
+.inner-page-footer-legal {
+    font-size: 10px;
+}
+
+#first-eligibility {
+    font-size: 20px;
+}
+
+#regards {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
